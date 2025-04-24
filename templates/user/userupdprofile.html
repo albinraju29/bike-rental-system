@@ -1,0 +1,733 @@
+{% extends 'user/userheader.html' %}
+{% load static %}
+
+{% block header %}
+<html>
+<head>
+    <style>
+        :root {
+            --glass-color: rgba(255, 255, 255, 0.15);
+            --blur-intensity: 10px;
+            --primary-color: #3498db;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background: url("{% static 'images/bg3.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Glassmorphism Container */
+        .form-container {
+            width: 60%;
+            margin: 30px auto;
+            background: var(--glass-color);
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Header Section */
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: white;
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: var(--danger-color);
+            color: white;
+            display: none;
+        }
+
+        .btn-save {
+            background-color: var(--success-color);
+            color: white;
+            display: none;
+        }
+
+        /* Form Group Layout */
+        .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Field Styling */
+        .field-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .field-value {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            min-height: 46px;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            color: white;
+            display: none;
+            transition: all 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus {
+            border-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Password Fields Container */
+        .password-fields {
+            display: none;
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Profile Picture */
+        .profile-picture {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+
+        .profile-img-container {
+            position: relative;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+            display: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .file-label:hover {
+            background-color: #2980b9;
+        }
+
+        /* Submit Button */
+        .submit {
+            background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 25px;
+            display: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+        }
+
+        .password-strength, .password-match {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .password-fields input {
+            padding-right: 35px !important;
+        }
+
+        .input-container {
+            position: relative;
+        }
+        /* Change Password Toggle */
+        .change-password-toggle {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .change-password-toggle:hover {
+            text-decoration: underline;
+        }
+
+        /* Confirmation Dialog */
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .dialog-content {
+            background: rgba(40, 40, 40, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .dialog-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+
+        }
+        .dialog-btns .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .dialog-btns .btn-cancel {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .dialog-btns .btn-save {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .dialog-btns .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        /* Responsive Design */
+        @media screen and (max-width: 992px) {
+            .form-container {
+                width: 80%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .form-container {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .form-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-picture {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="profile-header">
+            <h1>Your Profile</h1>
+            <div class="action-btns">
+                <button class="btn btn-edit" id="editBtn">Edit Profile</button>
+                <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn btn-save" id="saveBtn">Save Changes</button>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="profileForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <!-- Name Field -->
+                <div class="field-group">
+                    <label>Name</label>
+                    <div class="field-value" id="nameValue">{{ data.name }}</div>
+                    <input type="text" name="name" placeholder="Enter Name" value="{{ data.name }}" required>
+                </div>
+
+                <!-- Phone Field -->
+                <div class="field-group">
+                    <label>Phone</label>
+                    <div class="field-value" id="phoneValue">{{ data.phone }}</div>
+                    <input type="text" name="phone" placeholder="Enter Phone" pattern="[0-9]{10}" value="{{ data.phone }}" required>
+                </div>
+
+                <!-- Address Field -->
+                <div class="field-group">
+                    <label>Address</label>
+                    <div class="field-value" id="addressValue">{{ data.address }}</div>
+                    <input type="text" name="address" placeholder="Enter Address" value="{{ data.address }}" required>
+                </div>
+
+                <!-- Age Field -->
+                <div class="field-group">
+                    <label>Age</label>
+                    <div class="field-value" id="ageValue">{{ data.age }}</div>
+                    <input type="text" name="age" placeholder="Enter Age" value="{{ data.age }}" required>
+                </div>
+
+                <!-- Email Field -->
+                <div class="field-group">
+                    <label>Email</label>
+                    <div class="field-value" id="emailValue">{{ data.email }}</div>
+                    <input type="email" name="email" placeholder="Enter Email" value="{{ data.email }}" required>
+                </div>
+
+                <!-- Password Field -->
+                <div class="field-group">
+                    <label>Password</label>
+                    <div class="field-value" id="passwordValue">••••••••</div>
+                    <a class="change-password-toggle" id="changePasswordToggle">Change Password</a>
+                    <div class="password-fields" id="passwordFields" style="display: none;">
+                        <div class="field-group">
+                            <label>Current Password</label>
+                            <input type="password" name="current_password" placeholder="Enter Current Password" required style="display: block;">
+                        </div>
+                        <div class="field-group">
+                            <label>New Password</label>
+                            <input type="password" name="new_password" placeholder="Enter New Password" style="display: block;">
+                        </div>
+                        <div class="field-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" name="confirm_password" placeholder="Confirm New Password" style="display: block;">
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Place Field -->
+                <div class="field-group">
+                    <label>Place</label>
+                    <div class="field-value" id="placeValue">{{ data.place }}</div>
+                    <input type="text" name="place" placeholder="Enter Place" value="{{ data.place }}" required>
+                </div>
+
+                <!-- District Field -->
+                <div class="field-group">
+                    <label>District</label>
+                    <div class="field-value" id="districtValue">{{ data.district }}</div>
+                    <input type="text" name="district" placeholder="Enter District" value="{{ data.district }}" required>
+                </div>
+
+                <!-- Pincode Field -->
+                <div class="field-group">
+                    <label>Pincode</label>
+                    <div class="field-value" id="pincodeValue">{{ data.pincode }}</div>
+                    <input type="text" name="pincode" placeholder="Enter Pincode" pattern="[0-9]{6}" value="{{ data.pincode }}" required>
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="profile-picture">
+                    <div class="profile-img-container">
+                        {% if data.profile_picture %}
+                            <img src="{{ data.profile_picture.url }}" alt="Profile Picture" class="profile-img" id="profileImg">
+                        {% else %}
+                            <img src="{% static 'images/default-profile.png' %}" alt="Profile Picture" class="profile-img" id="profileImg">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="field-value">Profile Picture</div>
+                        <input type="file" name="profile_picture" id="fileInput" class="file-input" accept="image/*">
+                        <label for="fileInput" class="file-label">Change Photo</label>
+                    </div>
+                </div>
+            </div>
+
+            <input type="submit" value="Update Profile" class="submit">
+        </form>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div class="confirmation-dialog" id="confirmationDialog">
+        <div class="dialog-content">
+            <h3>Confirm Changes</h3>
+            <p>Are you sure you want to update your profile information?</p>
+            <div class="dialog-btns">
+                <button class="btn btn-cancel" id="dialogCancel">Cancel</button>
+                <button class="btn btn-save" id="dialogConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtn = document.getElementById('editBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const form = document.getElementById('profileForm');
+            const confirmationDialog = document.getElementById('confirmationDialog');
+            const dialogCancel = document.getElementById('dialogCancel');
+            const dialogConfirm = document.getElementById('dialogConfirm');
+            const fileInput = document.getElementById('fileInput');
+            const profileImg = document.getElementById('profileImg');
+            const changePasswordToggle = document.getElementById('changePasswordToggle');
+            const passwordFields = document.getElementById('passwordFields');
+            
+            // Password fields
+            const currentPasswordInput = document.querySelector('input[name="current_password"]');
+            const newPasswordInput = document.querySelector('input[name="new_password"]');
+            const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+            
+            // Initialize password fields
+            passwordFields.style.display = 'none';
+            
+            // Create password strength indicator
+            const strengthIndicator = document.createElement('div');
+            strengthIndicator.className = 'password-strength';
+            strengthIndicator.style.marginTop = '5px';
+            strengthIndicator.style.fontSize = '12px';
+            newPasswordInput.parentNode.appendChild(strengthIndicator);
+            
+            // Create password match indicator
+            const matchIndicator = document.createElement('div');
+            matchIndicator.className = 'password-match';
+            matchIndicator.style.marginTop = '5px';
+            matchIndicator.style.fontSize = '12px';
+            confirmPasswordInput.parentNode.appendChild(matchIndicator);
+    
+            // Add toggle buttons for password fields
+            function createToggleButton(input) {
+                const toggleBtn = document.createElement('button');
+                toggleBtn.type = 'button';
+                toggleBtn.className = 'password-toggle';
+                toggleBtn.innerHTML = '<i class="fa fa-eye-slash"></i>';
+                toggleBtn.style.position = 'absolute';
+                toggleBtn.style.right = '10px';
+                toggleBtn.style.top = '50%';
+                toggleBtn.style.transform = 'translateY(-50%)';
+                toggleBtn.style.background = 'none';
+                toggleBtn.style.border = 'none';
+                toggleBtn.style.cursor = 'pointer';
+                toggleBtn.style.color = '#666';
+                
+                toggleBtn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.replace('fa-eye-slash', 'fa-eye');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.replace('fa-eye', 'fa-eye-slash');
+                    }
+                });
+                
+                input.parentNode.style.position = 'relative';
+                input.parentNode.appendChild(toggleBtn);
+            }
+    
+            // Add toggle buttons to all password fields
+            [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(createToggleButton);
+    
+            // Real-time password strength check
+            newPasswordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Check length
+                if (password.length >= 8) strength++;
+                // Check uppercase
+                if (/[A-Z]/.test(password)) strength++;
+                // Check numbers
+                if (/[0-9]/.test(password)) strength++;
+                // Check special chars
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+                
+                // Update strength indicator
+                if (password.length === 0) {
+                    strengthIndicator.textContent = '';
+                    strengthIndicator.style.color = '';
+                } else if (strength < 2) {
+                    strengthIndicator.textContent = 'Weak';
+                    strengthIndicator.style.color = '#e74c3c';
+                } else if (strength < 4) {
+                    strengthIndicator.textContent = 'Medium';
+                    strengthIndicator.style.color = '#f39c12';
+                } else {
+                    strengthIndicator.textContent = 'Strong';
+                    strengthIndicator.style.color = '#2ecc71';
+                }
+                
+                // Check password match if confirm field has value
+                if (confirmPasswordInput.value) {
+                    checkPasswordMatch();
+                }
+            });
+    
+            // Real-time password match check
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            
+            function checkPasswordMatch() {
+                if (newPasswordInput.value && confirmPasswordInput.value) {
+                    if (newPasswordInput.value !== confirmPasswordInput.value) {
+                        matchIndicator.textContent = 'Passwords do not match';
+                        matchIndicator.style.color = '#e74c3c';
+                        confirmPasswordInput.style.borderColor = '#e74c3c';
+                    } else {
+                        matchIndicator.textContent = 'Passwords match!';
+                        matchIndicator.style.color = '#2ecc71';
+                        confirmPasswordInput.style.borderColor = '#2ecc71';
+                    }
+                } else {
+                    matchIndicator.textContent = '';
+                    confirmPasswordInput.style.borderColor = '';
+                }
+            }
+    
+            // Toggle edit mode
+            editBtn.addEventListener('click', function() {
+                // Show input fields
+                document.querySelectorAll('input[type="text"], input[type="email"]').forEach(input => {
+                    input.style.display = 'block';
+                });
+                document.querySelector('.file-label').style.display = 'inline-block';
+                document.querySelector('.submit').style.display = 'block';
+                
+                // Hide static values
+                document.querySelectorAll('.field-value').forEach(value => {
+                    value.style.display = 'none';
+                });
+                
+                // Toggle buttons
+                editBtn.style.display = 'none';
+                cancelBtn.style.display = 'block';
+                saveBtn.style.display = 'block';
+            });
+    
+            // Toggle password change fields
+            changePasswordToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (passwordFields.style.display === 'none') {
+                    passwordFields.style.display = 'block';
+                    document.getElementById('passwordValue').style.display = 'none';
+                } else {
+                    passwordFields.style.display = 'none';
+                    document.getElementById('passwordValue').style.display = 'block';
+                    
+                    // Clear password fields when hiding
+                    [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(input => {
+                        input.value = '';
+                    });
+                    strengthIndicator.textContent = '';
+                    matchIndicator.textContent = '';
+                }
+            });
+    
+            // Cancel edit mode
+            cancelBtn.addEventListener('click', function() {
+                // Hide input fields
+                document.querySelectorAll('input').forEach(input => {
+                    input.style.display = 'none';
+                    input.value = input.defaultValue;
+                });
+                document.querySelector('.file-label').style.display = 'none';
+                document.querySelector('.submit').style.display = 'none';
+                passwordFields.style.display = 'none';
+                document.getElementById('passwordValue').style.display = 'block';
+                
+                // Show static values
+                document.querySelectorAll('.field-value').forEach(value => {
+                    value.style.display = 'block';
+                });
+                
+                // Toggle buttons
+                editBtn.style.display = 'block';
+                cancelBtn.style.display = 'none';
+                saveBtn.style.display = 'none';
+                
+                // Reset profile picture if changed
+                if (fileInput.files[0]) {
+                    fileInput.value = '';
+                    var profilePictureUrl = "{% if data.profile_picture %}{{ data.profile_picture.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}";
+                    profileImg.src = profilePictureUrl;
+                }
+                
+                // Clear password indicators
+                strengthIndicator.textContent = '';
+                matchIndicator.textContent = '';
+            });
+    
+            // Save changes (show confirmation)
+            saveBtn.addEventListener('click', function() {
+                // Validate password fields if visible
+                if (passwordFields.style.display === 'block') {
+                    const currentPassword = currentPasswordInput.value;
+                    const newPassword = newPasswordInput.value;
+                    const confirmPassword = confirmPasswordInput.value;
+                    
+                    if (!currentPassword) {
+                        alert('Please enter your current password!');
+                        return;
+                    }
+                    
+                    if (newPassword && newPassword.length < 8) {
+                        alert('New password must be at least 8 characters!');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        alert('New passwords do not match!');
+                        return;
+                    }
+                }
+                
+                confirmationDialog.style.display = 'flex';
+            });
+    
+            // Dialog cancel
+            dialogCancel.addEventListener('click', function() {
+                confirmationDialog.style.display = 'none';
+            });
+    
+            // Dialog confirm
+            dialogConfirm.addEventListener('click', function() {
+                form.submit();
+            });
+    
+            // Preview profile picture when changed
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        profileImg.src = event.target.result;
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+    
+            // Close dialog when clicking outside
+            confirmationDialog.addEventListener('click', function(e) {
+                if (e.target === confirmationDialog) {
+                    confirmationDialog.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

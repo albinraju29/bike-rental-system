@@ -1,0 +1,267 @@
+{% extends 'admin/adminheader.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: -1;
+    }
+
+    .page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: inline-block;
+    }
+
+    .page-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 2px;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        padding: 10px;
+    }
+
+    .grid-item {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: var(--glass-border);
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .grid-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .station-icon {
+        font-size: 2.5rem;
+        color: var(--success);
+        margin-bottom: 15px;
+    }
+
+    .station-name {
+        font-size: 1.5rem;
+        margin: 10px 0;
+        color: white;
+        font-weight: 600;
+    }
+
+    .station-info {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 8px 0;
+    }
+
+    .station-info strong {
+        color: white;
+        font-weight: 500;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+    }
+
+    .btn i {
+        margin-right: 8px;
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .btn-update:hover {
+        background: linear-gradient(135deg, var(--secondary), #2a2d7a);
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-remove {
+        background: linear-gradient(135deg, var(--danger), #c2185b);
+        color: white;
+    }
+
+    .btn-remove:hover {
+        background: linear-gradient(135deg, #c2185b, #8e0038);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .grid-container {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .grid-container {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+        
+        .station-name {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .grid-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h1><i class="fas fa-map-marker-alt"></i> Station Management</h1>
+    </div>
+
+    <div class="grid-container">
+        {% if stations %}
+            {% for station in stations %}
+                <div class="grid-item">
+                    <div class="station-icon">
+                        <i class="fas fa-bicycle"></i>
+                    </div>
+                    
+                    <h3 class="station-name">{{ station.stationname }}</h3>
+                    
+                    <p class="station-info">
+                        <strong>Location:</strong> {{ station.place }}
+                    </p>
+                    
+                    <p class="station-info">
+                        <strong>Available Bikes:</strong> {{ station.no_of_bikes }}
+                    </p>
+
+                    <div class="action-buttons">
+                        <a href="{% url 'bikeapp:admin_update_station' station.id %}" class="btn btn-update"
+                           onclick="return confirm('Update this station?');">
+                            <i class="fas fa-edit"></i> Update
+                        </a>
+                        <a href="{% url 'bikeapp:admin_remove_station' station.id %}" class="btn btn-remove"
+                           onclick="return confirm('This will permanently delete the station. Continue?');">
+                            <i class="fas fa-trash-alt"></i> Remove
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>No Stations Available</h3>
+                <p>Add new stations to manage bike locations</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}

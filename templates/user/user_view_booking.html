@@ -1,0 +1,262 @@
+{% extends 'user/userheader.html' %}
+{% load static %}
+{% block header %}
+<html>
+
+<head>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: url("{% static 'images/bg3.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin: 20px 0;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-container {
+            width: 95%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 25px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+
+        th {
+            background-color: rgba(37, 43, 41, 0.8);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr {
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        tr:nth-child(even):hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 4px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cancel-btn {
+            background: rgba(255, 77, 77, 0.9);
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(204, 0, 0, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .pay-btn {
+            background: rgba(0, 123, 255, 0.9);
+            color: white;
+        }
+
+        .pay-btn:hover {
+            background: rgba(0, 86, 179, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .return-btn {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+        }
+
+        .return-btn:hover {
+            background: rgba(30, 126, 52, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 30px;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .glass-container {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn-group {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <h1><i class="fas fa-motorcycle"></i> My Bookings</h1>
+
+    <div class="glass-container">
+        <form method="post">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Start Station</th>
+                        <th>End Station</th>
+                        <th>Bike Number</th>
+                        <th>Total Amount</th>
+                        <th>Advance Paid</th>
+                        <th>Final Amount Due</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bookings %}
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.start_datetime }}</td>
+                                <td>{{ booking.end_datetime }}</td>
+                                <td>{{ booking.strtstation.stationname }}</td>
+                                <td>{{ booking.endstation.stationname }}</td>
+                                <td>{{ booking.bikenum.bikenum }}</td>
+                                <td>₹{{ booking.amount|default:"0" }}</td>
+                                <td>₹{{ booking.advance_paid|default:"0" }}</td>
+                                <td>₹{{ booking.final_amount_due|default:"0" }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'bikeapp:cancelbooking' %}?bikenum={{ booking.bikenum.bikenum }}&sstation={{ booking.strtstation.stationname }}"
+                                            class="btn cancel-btn"
+                                            onclick="return confirm('Are you sure you want to cancel this booking? Penalties may apply.')">
+                                            <i class="fas fa-times-circle"></i> Cancel
+                                        </a>
+
+                                        {% if booking.final_amount_due > 0 %}
+                                            <a href="{% url 'bikeapp:payment_balance' booking.id %}" class="btn pay-btn">
+                                                <i class="fas fa-rupee-sign"></i> Pay Balance
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'bikeapp:return_bike' %}?bikenum={{ booking.bikenum.bikenum }}&sstation={{ booking.endstation.stationname }}"
+                                                class="btn return-btn">
+                                                <i class="fas fa-undo"></i> Return
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="no-bookings">
+                                <i class="far fa-calendar-times" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                                No bookings found
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+{% endblock %}
+
+</body>
+</html>

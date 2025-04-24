@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Success</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfd6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.8), rgba(52, 152, 219, 0.8));
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .payment-body {
+            padding: 30px;
+        }
+
+        .receipt-card {
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .receipt-row:last-child {
+            border-bottom: none;
+        }
+
+        .receipt-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .receipt-value {
+            font-weight: 500;
+        }
+
+        .total-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--success-color);
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .security-footer {
+            background: rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .security-icons {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .receipt-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-container">
+        <div class="glass-panel">
+            <!-- Header Section -->
+            <div class="payment-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h1>Payment Successful!</h1>
+                <p>Your transaction has been completed</p>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="payment-body">
+                <div class="receipt-card">
+                    <div class="receipt-row">
+                        <span class="receipt-label">Name:</span>
+                        <span class="receipt-value">{{ name }}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Date:</span>
+                        <span class="receipt-value">{{ today }}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Advance Paid:</span>
+                        <span class="receipt-value">₹{{ advance_paid |floatformat:2 }}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Final Payment:</span>
+                        <span class="receipt-value">₹{{ final_amount |floatformat:2 }}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Transaction ID:</span>
+                        <span class="receipt-value">{{ transaction_id }}</span>
+                    </div>
+                    <div class="receipt-row total-amount">
+                        <span>Total Amount:</span>
+                        <span>₹{{ total_amount |floatformat:2 }}</span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa" title="Visa"></i>
+                    <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+                    <i class="fas fa-money-bill-wave" title="Cash"></i>
+                    <i class="fas fa-university" title="Bank Transfer"></i>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <form action="/user_home" method="get">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Continue to Home
+                        </button>
+                    </form>
+                    <form action="{% url 'bikeapp:send_receipt' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="email" value="{{ user.email }}">
+                        <input type="hidden" name="name" value="{{ name }}">
+                        <input type="hidden" name="amount" value="{{ total_amount }}">
+                        <input type="hidden" name="transaction_id" value="{{ transaction_id }}">
+                        <input type="hidden" name="booking_id" value="{{ booking_id }}">
+                        <button type="submit" class="btn btn-outline">
+                            <i class="fas fa-envelope"></i> Email Receipt
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Footer -->
+            <div class="security-footer">
+                <div class="security-icons">
+                    <i class="fas fa-shield-alt" title="Secure Payment"></i>
+                    <i class="fas fa-lock" title="256-bit Encryption"></i>
+                    <i class="fas fa-check-circle" title="Verified"></i>
+                </div>
+                <p><i class="fas fa-lock"></i> Your payment information is secure</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

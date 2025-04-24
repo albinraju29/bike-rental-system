@@ -1,0 +1,271 @@
+{% extends 'admin/adminheader.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --dark: #212529;
+        --light: #f8f9fa;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: -1;
+    }
+
+    .form-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    h1 {
+        color: white;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 3px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    input[type="text"],
+    select,
+    input[type="file"] {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 16px;
+    }
+
+    input:focus,
+    select:focus {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: var(--success);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        outline: none;
+    }
+
+    select {
+        appearance: none;
+        background: rgba(255, 255, 255, 0.2) url("data:image/svg+xml;utf8,<svg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'><path fill='white' d='M70 120L10 20h120z'/></svg>") no-repeat right 15px center;
+        background-size: 12px;
+        cursor: pointer;
+        padding-right: 35px;
+    }
+
+    .submit {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 14px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 20px;
+        font-weight: 600;
+    }
+
+    .submit:hover {
+        background: linear-gradient(135deg, var(--secondary), #2a2d7a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .current-image {
+        text-align: center;
+        margin: 15px 0;
+    }
+
+    .current-image img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    select option {
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .form-container {
+            width: 90%;
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-container {
+            padding: 20px;
+        }
+        
+        input[type="text"],
+        select,
+        input[type="file"] {
+            padding: 10px 15px 10px 35px;
+        }
+        
+        .input-wrapper i {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <h1><i class="fas fa-bicycle"></i> Update Bike</h1>
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'bikeapp:admin_update_bike' bike.id %}">
+        {% csrf_token %}
+
+        <!-- Current Bike Image -->
+        {% if bike.bimg %}
+        <div class="current-image">
+            <p><strong>Current Image:</strong></p>
+            <img src="{{ bike.bimg }}" alt="Current Bike Image">
+        </div>
+        {% endif %}
+
+        <!-- Bike Number -->
+        <div class="form-group">
+            <label for="bikenum">Bike Number</label>
+            <div class="input-wrapper">
+                <i class="fas fa-hashtag"></i>
+                <input type="text" id="bikenum" name="bikenum" value="{{ bike.bikenum }}" required placeholder="Enter bike number">
+            </div>
+        </div>
+
+        <!-- Bike Model -->
+        <div class="form-group">
+            <label for="bikemodel">Model</label>
+            <div class="input-wrapper">
+                <i class="fas fa-bicycle"></i>
+                <input type="text" id="bikemodel" name="bikemodel" value="{{ bike.bikemodel }}" required placeholder="Enter bike model">
+            </div>
+        </div>
+
+        <!-- Station Selection -->
+        <div class="form-group">
+            <label for="station">Station</label>
+            <div class="input-wrapper">
+                <i class="fas fa-map-marker-alt"></i>
+                <select name="station" id="station" required>
+                    {% for station in stations %}
+                        <option value="{{ station.id }}" {% if station.id == bike.station.id %}selected{% endif %}>
+                            {{ station.stationname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" class="form-control">
+                <option value="available">Available</option>
+                <option value="booked">Booked</option>
+                <option value="maintenance">Maintenance</option>
+            </select>
+        </div>
+        
+        <!-- New Image Upload -->
+        <div class="form-group">
+            <label for="bimg">Update Image (Optional)</label>
+            <div class="input-wrapper">
+                <i class="fas fa-camera"></i>
+                <input type="file" id="bimg" name="bimg" accept="image/*">
+            </div>
+        </div>
+
+        <button type="submit" class="submit">
+            <i class="fas fa-save"></i> Update Bike
+        </button>
+    </form>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}

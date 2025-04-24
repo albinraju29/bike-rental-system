@@ -1,0 +1,468 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: url("{% static 'images/bg2.jpg' %}") no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 30px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress {
+            width: 33.3%;
+            height: 100%;
+            background: red;
+            border-radius: 5px;
+            transition: width 0.3s, background 0.3s;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .input-container {
+            position: relative;
+            margin: 10px 0;
+        }
+        .input-container input {
+            width: 100%;
+            padding: 10px 35px 10px 35px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            outline: none;
+            transition: border 0.3s;
+        }
+        .input-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .input-container i:not(.password-toggle) {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+        }
+        .input-container input.weak-password {
+            border: 2px solid #ff6b6b !important;
+        }
+        .input-container input.medium-password {
+            border: 2px solid #ffcc00 !important;
+        }
+        .input-container input.strong-password {
+            border: 2px solid #4CAF50 !important;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .btn {
+            background: #222;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: 0.3s;
+            width: 48%;
+        }
+        .btn:hover {
+            background: #444;
+        }
+        .hidden {
+            display: none;
+        }
+        .profile-preview {
+            display: none;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px auto;
+        }
+        .password-strength {
+            text-align: left;
+            margin-top: 5px;
+            font-size: 14px;
+            color: white;
+        }
+        .password-strength span {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+        a {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+            color: rgb(240, 243, 73);
+            text-decoration: none;
+        }
+        .error-message {
+            color: #ff6b6b;
+            font-size: 12px;
+            text-align: left;
+            margin-top: 2px;
+            display: none;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-container">
+        <h2>Register</h2>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" action="{% url 'bikeapp:user_register' %}" id="registrationForm">
+            {% csrf_token %}
+
+            <!-- Step 1: Personal Details -->
+            <div class="step active">
+                <label for="name" class="sr-only">Full Name</label>
+                <div class="input-container">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="name" name="name" placeholder="Full Name" required>
+                </div>
+
+                <label for="phone" class="sr-only">Phone Number</label>
+                <div class="input-container">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phone" name="phone" placeholder="Phone Number" pattern="[0-9]{10,15}" required>
+                    <div class="error-message" id="phone-error">Enter a valid phone number (10-15 digits)</div>
+                </div>
+
+                <label for="age" class="sr-only">Age</label>
+                <div class="input-container">
+                    <i class="fas fa-birthday-cake"></i>
+                    <input type="number" id="age" name="age" placeholder="Age" min="1" max="120" required>
+                </div>
+
+                <label for="profile_picture" class="sr-only">Profile Picture</label>
+                <div class="input-container">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(event)" required>
+                </div>
+                <img id="profilePreview" class="profile-preview" alt="Profile Preview">
+                <div class="error-message" id="image-error">Max 2MB, only images (JPG, PNG)</div>
+            </div>
+
+            <!-- Step 2: Account Details -->
+            <div class="step">
+                <label for="email" class="sr-only">Email</label>
+                <div class="input-container">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                </div>
+
+                <label for="password" class="sr-only">Password</label>
+                <div class="input-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Password" minlength="8" required onkeyup="checkPasswordStrength()">
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    Password Strength: <span id="strengthText">Weak</span>
+                </div>
+
+                <label for="confirm_password" class="sr-only">Confirm Password</label>
+                <div class="input-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="error-message" id="password-error">Passwords do not match!</div>
+            </div>
+
+            <!-- Step 3: Location Details -->
+            <div class="step">
+                <label for="address" class="sr-only">Address</label>
+                <div class="input-container">
+                    <i class="fas fa-home"></i>
+                    <input type="text" id="address" name="address" placeholder="Address" required>
+                </div>
+
+                <label for="place" class="sr-only">Place</label>
+                <div class="input-container">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" id="place" name="place" placeholder="Place" required>
+                </div>
+
+                <label for="district" class="sr-only">District</label>
+                <div class="input-container">
+                    <i class="fas fa-city"></i>
+                    <input type="text" id="district" name="district" placeholder="District" required>
+                </div>
+
+                <label for="pincode" class="sr-only">Pincode</label>
+                <div class="input-container">
+                    <i class="fas fa-map-pin"></i>
+                    <input type="text" id="pincode" name="pincode" placeholder="Pincode" pattern="\d{6}" required>
+                    <div class="error-message" id="pincode-error">Enter a valid 6-digit pincode</div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn hidden" id="prevBtn" onclick="prevStep()">Previous</button>
+                <button type="button" class="btn" id="nextBtn" onclick="nextStep()">Next</button>
+                <button type="submit" class="btn hidden" id="submitBtn">Register</button>
+            </div>
+
+            <br><b>Already have an account? </b><br>
+            <a href="{% url 'bikeapp:login' %}">Sign in</a>
+        </form>
+    </div>
+
+    <script>
+        // Multi-step form logic
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".step");
+        const progressBar = document.querySelector(".progress");
+        const form = document.getElementById("registrationForm");
+
+        function showStep(step) {
+            steps.forEach((s, index) => {
+                s.style.display = index === step ? "block" : "none";
+            });
+
+            document.getElementById("prevBtn").classList.toggle("hidden", step === 0);
+            document.getElementById("nextBtn").classList.toggle("hidden", step === steps.length - 1);
+            document.getElementById("submitBtn").classList.toggle("hidden", step !== steps.length - 1);
+
+            progressBar.style.width = `${((step + 1) / steps.length) * 100}%`;
+            
+            // Update progress bar color
+            if (step === steps.length - 1) {
+                progressBar.style.background = "#4CAF50"; // Green for final step
+            } else {
+                progressBar.style.background = "#4361ee"; // Blue for intermediate steps
+            }
+        }
+
+        function nextStep() {
+            if (validateCurrentStep() && currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function validateCurrentStep() {
+            let isValid = true;
+            const currentStepInputs = steps[currentStep].querySelectorAll("input[required]");
+
+            currentStepInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.style.border = "1px solid red";
+                } else {
+                    input.style.border = "1px solid rgba(255, 255, 255, 0.5)";
+                }
+            });
+
+            // Special validations for step 2 (password)
+            if (currentStep === 1) {
+                const password = document.getElementById("password").value;
+                const confirmPassword = document.getElementById("confirm_password").value;
+                const passwordError = document.getElementById("password-error");
+
+                if (password !== confirmPassword) {
+                    passwordError.style.display = "block";
+                    isValid = false;
+                } else {
+                    passwordError.style.display = "none";
+                }
+            }
+
+            return isValid;
+        }
+
+        // Toggle password visibility
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.parentElement.querySelector(".password-toggle i");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById("password");
+            const strengthText = document.getElementById("strengthText");
+
+            // Reset classes
+            password.classList.remove("weak-password", "medium-password", "strong-password");
+
+            let strength = 0;
+            if (password.value.length >= 8) strength++;
+            if (/[A-Z]/.test(password.value)) strength++;
+            if (/[0-9]/.test(password.value)) strength++;
+            if (/[^A-Za-z0-9]/.test(password.value)) strength++;
+
+            if (strength < 2) {
+                strengthText.textContent = "Weak";
+                strengthText.style.backgroundColor = "#ff6b6b";
+                password.classList.add("weak-password");
+            } else if (strength < 4) {
+                strengthText.textContent = "Medium";
+                strengthText.style.backgroundColor = "#ffcc00";
+                password.classList.add("medium-password");
+            } else {
+                strengthText.textContent = "Strong";
+                strengthText.style.backgroundColor = "#4CAF50";
+                password.classList.add("strong-password");
+            }
+        }
+
+        // Image preview with validation
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const errorElement = document.getElementById("image-error");
+
+            if (!file) return;
+
+            if (!file.type.match("image.*")) {
+                errorElement.textContent = "Only images are allowed (JPG, PNG)";
+                errorElement.style.display = "block";
+                event.target.value = "";
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                errorElement.textContent = "Image must be less than 2MB";
+                errorElement.style.display = "block";
+                event.target.value = "";
+                return;
+            }
+
+            errorElement.style.display = "none";
+
+            const reader = new FileReader();
+            reader.onload = function() {
+                const profilePreview = document.getElementById("profilePreview");
+                profilePreview.src = reader.result;
+                profilePreview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Form submission handler
+        form.addEventListener("submit", function(e) {
+            // Validate all steps before submission
+            let allValid = true;
+            
+            // Check all required fields
+            const allInputs = form.querySelectorAll("input[required]");
+            allInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    allValid = false;
+                    input.style.border = "1px solid red";
+                }
+            });
+
+            // Check password match
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm_password").value;
+            if (password !== confirmPassword) {
+                document.getElementById("password-error").style.display = "block";
+                allValid = false;
+            }
+
+            if (!allValid) {
+                e.preventDefault();
+                // Show the step with errors
+                for (let i = 0; i < steps.length; i++) {
+                    const inputs = steps[i].querySelectorAll("input[required]");
+                    for (let input of inputs) {
+                        if (!input.value.trim()) {
+                            currentStep = i;
+                            showStep(currentStep);
+                            // Scroll to first error
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", function() {
+            showStep(currentStep);
+        });
+    </script>
+</body>
+</html>

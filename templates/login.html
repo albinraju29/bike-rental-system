@@ -1,0 +1,288 @@
+{% block header %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Login - BikeApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Preload fonts for better performance -->
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Poppins:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Poppins:400,500&display=swap"></noscript>
+    
+    <!-- FontAwesome for Lock/Unlock Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .bg-img {
+            background: url("{% static 'images/bg.jpg' %}") no-repeat center center/cover; 
+            height: 100vh;
+            position: relative;
+        }
+
+        .bg-img:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+            text-align: center;
+            padding: 60px 32px;
+            width: 370px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+
+        .content header {
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            position: relative;
+            height: 45px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .field span {
+            color: #222;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .field input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #222;
+        }
+
+        .field input:focus {
+            outline: 2px solid #3498db;
+        }
+
+        /* Password toggle styling */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 0;
+            color: #222;
+            font-size: 18px;
+        }
+
+        .pass {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .pass a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .pass a:hover {
+            text-decoration: underline;
+        }
+
+        /* Login Button */
+        .field input[type="submit"] {
+            background: linear-gradient(135deg, #3498db, #2681d8);
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 25px;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .field:last-child {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .field input[type="submit"]:hover {
+            background: linear-gradient(135deg, #2681d8, #1a6dbb);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .signup {
+            font-size: 14px;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .signup a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #3498db;
+            padding: 10px 15px;
+            color: white;
+            font-size: 14px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .back-home:hover {
+            background: #2681d8;
+        }
+
+        /* Accessibility - Hidden labels */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Error message styling */
+        .error-message {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .content {
+                width: 90%;
+                padding: 40px 20px;
+            }
+            .field input[type="submit"] {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-img">
+        <a href="{% url 'bikeapp:index' %}" class="back-home">← Back to Home</a>
+        <div class="content">
+            <header>Login</header>
+            <form method="POST">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="error-message">
+                        Invalid username or password.
+                    </div>
+                {% endif %}
+                
+                <div class="field">
+                    <label for="username" class="sr-only">Username</label>
+                    <span class="fa fa-user"></span>
+                    <input type="text" id="username" name="username" autocomplete="username" required placeholder="Enter your username">
+                </div>
+                
+                <div class="field space">
+                    <label for="password" class="sr-only">Password</label>
+                    <span class="fa fa-lock"></span>
+                    <input type="password" id="password" name="password" class="pass-key" autocomplete="current-password" required placeholder="Enter your password">
+                    <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                        <i class="fa fa-eye-slash"></i>
+                    </button>
+                </div>
+                
+                <div class="pass">
+                    <a href="{% url 'bikeapp:password_reset' %}">Forgot Password?</a>
+                </div>
+                
+                <div class="field">
+                    <input type="submit" value="Login">
+                </div>
+            </form>
+            
+            <div class="signup">Don't have an account? 
+                <a href="{% url 'bikeapp:user_register' %}">Register now</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passField = document.querySelector('.pass-key');
+            const toggleBtn = document.querySelector('.toggle-password');
+            const toggleIcon = toggleBtn.querySelector('i');
+            
+            toggleBtn.addEventListener('click', function() {
+                if (passField.type === "password") {
+                    passField.type = "text";
+                    toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+                } else {
+                    passField.type = "password";
+                    toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+                }
+            });
+            
+            // Add keyboard support for toggle button
+            toggleBtn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

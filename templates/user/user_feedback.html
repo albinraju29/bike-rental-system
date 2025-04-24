@@ -1,0 +1,168 @@
+{% extends 'user/userheader.html' %}
+{% load static %}
+{% block header %}
+<html>
+<head>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background: url("{% static 'images/bg3.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .feedback-container {
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            resize: none;
+            font-size: 16px;
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        textarea:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+        }
+
+        .submit {
+            background: linear-gradient(135deg, #252b29, #1a1f1d);
+            color: white;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit:hover {
+            background: linear-gradient(135deg, #1a1f1d, #252b29);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .feedback-container {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1><b>{{ msg }}</b></h1>
+
+    <div class="feedback-container">
+        <form method="post">
+            {% csrf_token %}
+            
+            <label for="feedback">Your Feedback</label>
+            <textarea id="feedback" name="feedback" required maxlength="250" 
+                      placeholder="Share your thoughts with us..." 
+                      oninput="updateCharCount()"></textarea>
+
+            <div class="char-counter">
+                <span id="charCount">0</span>/250 characters
+            </div>
+
+            <button type="submit" class="submit">Submit Feedback</button>
+        </form>
+    </div>
+
+    <script>
+        function updateCharCount() {
+            const feedback = document.getElementById("feedback");
+            const charCount = document.getElementById("charCount");
+            charCount.textContent = feedback.value.length;
+            
+            // Change color when approaching limit
+            if (feedback.value.length > 200) {
+                charCount.style.color = '#ff9e7d';
+            } else if (feedback.value.length > 225) {
+                charCount.style.color = '#ff6b6b';
+            } else {
+                charCount.style.color = 'rgba(255, 255, 255, 0.7)';
+            }
+        }
+    </script>
+</body>
+</html>
+{% endblock %}

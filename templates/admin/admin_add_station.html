@@ -1,0 +1,344 @@
+{% extends 'admin/adminheader.html' %}
+{% load static %}
+{% block header %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --danger: #f72585;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: -1;
+    }
+
+    .form-container {
+        width: 50%;
+        margin: 50px auto;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    h1 {
+        color: white;
+        text-align: center;
+        font-size: 26px;
+        margin-bottom: 30px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 3px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    label i {
+        margin-right: 8px;
+        width: 20px;
+        text-align: center;
+        color: var(--success);
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 14px 15px 14px 45px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+    }
+
+    input:focus {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: var(--success);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        outline: none;
+    }
+
+    /* Submit Button */
+    .submit {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 16px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit:hover {
+        background: linear-gradient(135deg, var(--secondary), #2a2d7a);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .submit:active {
+        transform: translateY(-1px);
+    }
+
+    .submit::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.4s ease;
+    }
+
+    .submit:hover::after {
+        transform: translateX(100%);
+    }
+
+    /* Validation Styles */
+    .error-message {
+        color: var(--danger);
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .input-error {
+        border-color: var(--danger) !important;
+    }
+
+    .input-success {
+        border-color: var(--success) !important;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+        .form-container {
+            width: 85%;
+            padding: 25px;
+        }
+    }
+
+    @media screen and (max-width: 576px) {
+        .form-container {
+            width: 95%;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 22px;
+        }
+        
+        input[type="text"] {
+            padding: 12px 15px 12px 40px;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <form method="post" id="stationForm">
+        {% csrf_token %}
+
+        <h1><i class="fas fa-map-marker-alt"></i> {{ msg }}</h1>
+
+        <!-- Station Name -->
+        <div class="form-group">
+            <label for="stationname"><i class="fas fa-signature"></i> Station Name</label>
+            <div class="input-wrapper">
+                <i class="fas fa-map-pin input-icon"></i>
+                <input type="text" name="stationname" id="stationname" 
+                       pattern="[A-Za-z ]{1,32}" 
+                       title="Only letters and spaces allowed (max 32 characters)"
+                       required placeholder="e.g. Central Station">
+            </div>
+            <div class="error-message" id="nameError">Please enter a valid station name (letters only, max 32 characters)</div>
+        </div>
+
+        <!-- Place -->
+        <div class="form-group">
+            <label for="place"><i class="fas fa-location-dot"></i> Place</label>
+            <div class="input-wrapper">
+                <i class="fas fa-city input-icon"></i>
+                <input type="text" name="place" id="place" 
+                       pattern="[A-Za-z ]{1,32}" 
+                       title="Only letters and spaces allowed (max 32 characters)"
+                       required placeholder="e.g. New York">
+            </div>
+            <div class="error-message" id="placeError">Please enter a valid place name (letters only, max 32 characters)</div>
+        </div>
+
+        <!-- Number of Bikes -->
+        <div class="form-group">
+            <label for="no_of_bikes"><i class="fas fa-bicycle"></i> Number of Bikes</label>
+            <div class="input-wrapper">
+                <i class="fas fa-hashtag input-icon"></i>
+                <input type="text" name="no_of_bikes" id="no_of_bikes" 
+                pattern="\d+" 
+                title="Positive numbers only"
+                required placeholder="e.g. 20">
+            </div>
+            <div class="error-message" id="bikesError">Please enter a valid number (digits only, max 999)</div>
+        </div>
+
+        <button type="submit" class="submit">
+            <i class="fas fa-plus-circle"></i> ADD STATION
+        </button>
+    </form>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+    // Form Validation
+    document.getElementById('stationForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate Station Name
+        const stationName = document.getElementById('stationname');
+        if (!stationName.value || !stationName.checkValidity()) {
+            document.getElementById('nameError').style.display = 'block';
+            stationName.classList.add('input-error');
+            isValid = false;
+        } else {
+            stationName.classList.remove('input-error');
+            stationName.classList.add('input-success');
+        }
+        
+        // Validate Place
+        const place = document.getElementById('place');
+        if (!place.value || !place.checkValidity()) {
+            document.getElementById('placeError').style.display = 'block';
+            place.classList.add('input-error');
+            isValid = false;
+        } else {
+            place.classList.remove('input-error');
+            place.classList.add('input-success');
+        }
+        
+        // Validate Number of Bikes
+        const bikes = document.getElementById('no_of_bikes');
+        if (!bikes.value || !bikes.checkValidity()) {
+            document.getElementById('bikesError').style.display = 'block';
+            bikes.classList.add('input-error');
+            isValid = false;
+        } else {
+            bikes.classList.remove('input-error');
+            bikes.classList.add('input-success');
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Scroll to first error
+            document.querySelector('.error-message[style*="display: block"]').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    });
+
+    // Real-time validation
+    document.getElementById('stationname').addEventListener('input', function() {
+        if (this.checkValidity()) {
+            document.getElementById('nameError').style.display = 'none';
+            this.classList.remove('input-error');
+            this.classList.add('input-success');
+        }
+    });
+    
+    document.getElementById('place').addEventListener('input', function() {
+        if (this.checkValidity()) {
+            document.getElementById('placeError').style.display = 'none';
+            this.classList.remove('input-error');
+            this.classList.add('input-success');
+        }
+    });
+    
+    document.getElementById('no_of_bikes').addEventListener('input', function() {
+        if (this.checkValidity()) {
+            document.getElementById('bikesError').style.display = 'none';
+            this.classList.remove('input-error');
+            this.classList.add('input-success');
+        }
+    });
+
+    // Add input masking for number of bikes
+    // document.getElementById('no_of_bikes').addEventListener('keypress', function(e) {
+    //     const charCode = (e.which) ? e.which : e.keyCode;
+    //     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    //         e.preventDefault();
+    //     }
+    // });
+
+    
+</script>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'user/userheader.html' %}
+{% block header %}
+<style>
+    :root {
+        --glass-light: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --primary-color: #3498db;
+        --danger-color: #e74c3c;
+        --text-dark: #2c3e50;
+    }
+
+    .report-container {
+        background: var(--glass-light);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        padding: 30px;
+        max-width: 800px;
+        margin: 40px auto;
+    }
+
+    .report-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .report-title {
+        color: var(--danger-color);
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .report-table th {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--danger-color);
+        padding: 12px;
+        text-align: left;
+        border-bottom: 2px solid var(--danger-color);
+    }
+
+    .report-table td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .report-table tr:hover {
+        background-color: rgba(0,0,0,0.02);
+    }
+
+    .print-btn {
+        background-color: var(--danger-color);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 30px auto 0;
+    }
+
+    .print-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    @media print {
+        .report-container {
+            box-shadow: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .print-btn {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .report-container {
+            padding: 20px;
+        }
+        
+        .report-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="report-container">
+    <div class="report-header">
+        <h1 class="report-title">Payment History Report</h1>
+        <p>Your transaction history with City Wie Bike /p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Amount (₹)</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in data %}
+                <tr>
+                    <td>10</td>
+                    <td>{{ d.1 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center;">No payment records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" onclick="window.print()" class="print-btn">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any JavaScript functionality here if needed
+});
+</script>
+{% endblock %}

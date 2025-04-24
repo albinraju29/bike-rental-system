@@ -1,0 +1,376 @@
+{% extends 'admin/adminheader.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --dark: #212529;
+        --light: #f8f9fa;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: -1;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 30px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    h1 {
+        color: white;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 32px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(to right, var(--danger), var(--warning));
+        border-radius: 3px;
+    }
+
+    .user-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .user-card {
+        background: rgba(255, 50, 50, 0.1);
+        backdrop-filter: blur(5px);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 100, 100, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 50, 50, 0.15);
+    }
+
+    .user-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .profile-img-container {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .profile-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255, 100, 100, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .user-card:hover .profile-img {
+        border-color: var(--danger);
+    }
+
+    .no-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(255, 100, 100, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 14px;
+    }
+
+    .user-info h3 {
+        margin: 0;
+        color: white;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .user-info p {
+        margin: 5px 0 0;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .user-details {
+        margin-top: 15px;
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .detail-item {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .detail-item strong {
+        color: white;
+        margin-right: 5px;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        min-width: 100px;
+    }
+
+    .btn i {
+        margin-right: 5px;
+    }
+
+    .btn-view {
+        background: var(--primary);
+        color: white;
+        border: none;
+        width: 100%;
+    }
+
+    .btn-view:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-approve {
+        background: var(--success);
+        color: white;
+    }
+
+    .btn-approve:hover {
+        background: #3aa8d4;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-delete {
+        background: var(--danger);
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #e01a6f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 30px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+        grid-column: 1 / -1;
+    }
+
+    .rejected-badge {
+        background: var(--danger);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 5px;
+        display: inline-block;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px;
+        }
+        
+        .user-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        
+        h1 {
+            font-size: 28px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .user-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-img, .no-image {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .btn {
+            padding: 6px 10px;
+            font-size: 13px;
+            min-width: auto;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-user-slash"></i> Rejected Users</h1>
+    
+    <div class="user-grid">
+        {% for user in rejected_users %}
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="profile-img-container">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" class="profile-img" alt="Profile Picture">
+                        {% else %}
+                            <div class="no-image">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="user-info">
+                        <h3>{{ user.name }}</h3>
+                        <p>{{ user.place }}, {{ user.district }}</p>
+                        <span class="rejected-badge">REJECTED</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-view" onclick="toggleDetails('{{ user.id }}')">
+                    <i class="fas fa-chevron-down"></i> View Details
+                </button>
+                
+                <div class="user-details" id="details-{{ user.id }}">
+                    <div class="detail-item"><strong>User ID:</strong> {{ user.id }}</div>
+                    <div class="detail-item"><strong>Phone:</strong> {{ user.phone }}</div>
+                    <div class="detail-item"><strong>Email:</strong> {{ user.email }}</div>
+                    <div class="detail-item"><strong>Age:</strong> {{ user.age }}</div>
+                    <div class="detail-item"><strong>Address:</strong> {{ user.address }}</div>
+                    <div class="detail-item"><strong>Pincode:</strong> {{ user.pincode }}</div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'bikeapp:admin_approve_user' user.id %}" class="btn btn-approve"
+                       onclick="return confirm('Are you sure you want to approve this user?');">
+                        <i class="fas fa-check"></i> Approve
+                    </a>
+                    <a href="{% url 'bikeapp:admin_delete_user' user.id %}" class="btn btn-delete"
+                       onclick="return confirm('Are you sure you want to permanently delete this user? This cannot be undone.');">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="no-data">No rejected users found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+    function toggleDetails(userId) {
+        const details = document.getElementById('details-' + userId);
+        const btn = document.querySelector(`button[onclick="toggleDetails('${userId}')"]`);
+        
+        if (details.style.display === 'block') {
+            details.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-chevron-down"></i> View Details';
+        } else {
+            details.style.display = 'block';
+            btn.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Details';
+        }
+    }
+
+    // Add confirmation for actions
+    document.querySelectorAll('.btn-approve').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to approve this user?')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (!confirm('WARNING: This will permanently delete the user. Are you sure?')) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'admin/adminheader.html' %}
+{% block header %}
+<center>
+    <h1 style="color:red"><b>{{ message }}</b></h1>
+</center>
+<form method="post" class="banner_form">
+    {% csrf_token %}
+    <input type="hidden" name="feedback_id" value="{{ feedback.id }}"> <!-- Ensure feedback ID is included -->
+
+    <table class="table">
+        <tr>
+            <td>FEEDBACK</td>
+            <td>{{ feedback.feedback }}</td> <!-- Show original feedback -->
+        </tr>
+        <tr>
+            <td>REPLY</td>
+            <td><textarea rows="5" cols="50" name="reply" required>{{ feedback.reply }}</textarea></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit" style="background-color: aqua;"></td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

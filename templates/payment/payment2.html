@@ -1,0 +1,370 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfd6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(46, 204, 113, 0.8));
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .payment-header i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .payment-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .payment-body {
+            padding: 30px;
+        }
+
+        fieldset {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        legend {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            padding: 0 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.7);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        input[readonly] {
+            background-color: rgba(0,0,0,0.05);
+            border: 1px dashed rgba(0,0,0,0.1);
+            padding-left: 15px;
+        }
+
+        .amount-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--success-color);
+            padding: 10px 0;
+        }
+
+        .submit-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .payment-footer {
+            background: rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .security-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .security-icons i {
+            transition: all 0.3s ease;
+        }
+
+        .security-icons i:hover {
+            transform: scale(1.2);
+            color: var(--success-color);
+        }
+
+        @media (max-width: 768px) {
+            .payment-body {
+                padding: 20px;
+            }
+            
+            .payment-header {
+                padding: 20px;
+            }
+            
+            .payment-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="glass-panel">
+            <div class="payment-header">
+                <i class="fas fa-motorcycle"></i>
+                <h1>City Wide Bike </h1>
+                <p>Secure Payment Gateway</p>
+            </div>
+
+            <div class="payment-body">
+                <form method="POST" action="{% url 'bikeapp:payment3' booking_id=booking_id %}">
+                    {% csrf_token %}
+                    
+                    <!-- Transaction Details -->
+                    <fieldset>
+                        <legend><i class="fas fa-receipt"></i> Transaction Details</legend>
+                        
+                        <div class="form-group">
+                            <label>Pay To:</label>
+                            <div class="amount-display">ELECTRO STATION</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bike Name:</label>
+                            <input type="text" name="bike_name" readonly value="{{ bike_name }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Rental Period:</label>
+                            <input type="text" name="rental_period" readonly value="{{ rental_period }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Advance Paid:</label>
+                            <div class="amount-display">₹{{ advance_payment }}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Total Payable:</label>
+                            <input type="text" name="amount" readonly value="{{ total_cost }}">
+                        </div>
+                    </fieldset>
+
+                    <!-- Payment Method -->
+                    <fieldset>
+                        <legend><i class="fas fa-credit-card"></i> Payment Method</legend>
+                        
+                        <div class="form-group">
+                            <label>Payment Method:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-wallet"></i>
+                                <select name="payment_method" required>
+                                    <option value="test">Test Payment</option>
+                                    <option value="credit_card">Credit Card</option>
+                                    <option value="debit_card">Debit Card</option>
+                                    <option value="upi">UPI</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Card Number:</label>
+                            <div class="input-with-icon">
+                                <i class="far fa-credit-card"></i>
+                                <input type="text" class="input-field" name="cardno" 
+                                id="cardNumberInput"
+                                pattern="\d{4}\s\d{4}\s\d{4}\s\d{4}" 
+                                maxlength="19" 
+                                placeholder="1234 5678 9012 3456" 
+                                title="Please enter a 16-digit card number" 
+                                required />
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Billing Information -->
+                    <fieldset>
+                        <legend><i class="fas fa-user"></i> Billing Information</legend>
+                        
+                        <div class="form-group">
+                            <label>Your Name:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" name="full_name" value="{{ user.full_name }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Address:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" name="billing_address" value="{{ user.billing_address }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Phone:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" name="phone_number" value="{{ user.phone_number }}" required>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-lock"></i> Make Payment
+                    </button>
+                </form>
+            </div>
+
+            <div class="payment-footer">
+                <div class="security-icons">
+                    <i class="fas fa-shield-alt" title="256-bit SSL Encryption"></i>
+                    <i class="fas fa-lock" title="Secure Payment"></i>
+                    <i class="fas fa-check-circle" title="Verified"></i>
+                </div>
+                <p style="margin-top: 15px; color: var(--text-dark);">
+                    <i class="fas fa-lock"></i> Your payment is securely processed
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format card number input
+        const cardNumberInput = document.getElementById('cardNumberInput');
+        
+        cardNumberInput.addEventListener('input', function(e) {
+            // Remove all non-digit characters
+            let value = e.target.value.replace(/\D/g, '');
+            
+            // Limit to 16 digits
+            if (value.length > 16) {
+                value = value.substring(0, 16);
+            }
+            
+            // Format with spaces every 4 digits
+            if (value.length > 0) {
+                value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+            }
+            
+            e.target.value = value;
+        
+        // Create a hidden field to store the raw card number
+        const form = document.querySelector('form');
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'raw_cardno';
+        form.appendChild(hiddenInput);
+        
+        // Update hidden field before submission
+        form.addEventListener('submit', function(e) {
+            hiddenInput.value = cardNumberInput.value.replace(/\s/g, '');
+        });
+    });
+
+        // Update payment method fields visibility
+        const paymentMethod = document.querySelector('select[name="payment_method"]');
+        function updatePaymentFields() {
+            // You can add logic here to show/hide fields based on payment method
+        }
+        paymentMethod.addEventListener('change', updatePaymentFields);
+        updatePaymentFields();
+    });
+
+    const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // You can add any pre-submission logic here
+            console.log('Form submitted, redirecting to payment3.html');
+        });
+    </script>
+</body>
+</html>

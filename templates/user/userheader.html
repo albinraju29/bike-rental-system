@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <title>City Wide Bike - Home</title>
+
+    <!-- Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="keywords" content="City Wide Bike, Bike Rentals, Transport, Responsive Web Template">
+
+    <!-- CSS Styles -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/flexslider.css' %}" type="text/css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+    <script src="{% static 'js/responsiveslides.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+
+    <script>
+        $(function () {
+            $("#slider").responsiveSlides({
+                auto: true,
+                nav: true,
+                speed: 500,
+                namespace: "callbacks",
+                pager: true,
+            });
+        });
+    </script>
+
+    <style>
+        /* Base Styles */
+        body {
+            padding-top: 100px; /* Adjusted for fixed header */
+            font-family: 'Poppins', sans-serif;
+            margin-top: 120px;
+        }
+
+        /* Glassmorphism Header */
+        .header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        /* Logo Styling */
+        .logo h1 {
+            margin: 0;
+        }
+        
+        .logo a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        /* Add this to your CSS */
+        .main-content {
+            padding-top: 120px; /* Should be slightly more than header height */
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding-top: 100px; /* Adjusted for mobile header */
+            }
+        }
+        /* User Info Section */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .phone h5 {
+            color: white;
+            margin: 0;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-pic img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .profile-pic img:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Navigation Menu */
+        .header-bottom {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-default {
+            background: transparent;
+            border: none;
+            margin-bottom: 0;
+        }
+
+        .nav.navbar-nav li a {
+            color: white !important;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav.navbar-nav li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        /* Mobile Menu Button */
+        .navbar-toggle {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .navbar-toggle .icon-bar {
+            background-color: white;
+        }
+
+        /* Mobile Menu Dropdown */
+        .navbar-collapse {
+            border: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 80px;
+            }
+            
+            .header-top {
+                padding: 10px 0;
+            }
+            
+            .user-info {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .nav.navbar-nav li a {
+                padding: 12px 15px;
+            }
+            
+            .navbar-collapse {
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo a {
+                font-size: 20px;
+            }
+            
+            .phone h5 {
+                font-size: 14px;
+            }
+            
+            .profile-pic img {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Start Header Section -->
+    <div class="header">
+        <div class="container">
+            <div class="header-top">
+                
+                <!-- Logo -->
+                <div class="logo">
+                    <h1><a href="/">City Wide Bike</a></h1>
+                </div>
+
+                <!-- User Info (Aligned to Right) -->
+                <div class="user-info">
+                    
+                    <div class="phone">
+                        <h5>
+                            <span class="glyphicon glyphicon-user"></span>
+                            {% if request.user.is_authenticated %}
+                                Welcome, {{ request.user.username }}
+                            {% else %}
+                                Welcome, Guest
+                            {% endif %}
+                        </h5>
+                    </div>
+                    
+                    <!-- Profile Picture -->
+                    <div class="profile-pic">
+                        {% if request.user.is_authenticated %}
+                            {% with user_profile=request.user.userregister %}
+                                {% if user_profile.profile_picture %}
+                                    <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture">
+                                {% else %}
+                                    <img src="{% static 'images/default-profile.jpg' %}" alt="Default Profile">
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            <img src="{% static 'images/default-profile.jpg' %}" alt="Default Profile">
+                        {% endif %}
+                    </div>
+                
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="header-bottom">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+
+                        <!-- Mobile Toggle Button -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" 
+                                data-target="#main-navbar" aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+
+                        <!-- Navbar Links -->
+                        <div class="collapse navbar-collapse" id="main-navbar">
+                            <ul class="nav navbar-nav cl-effect-16">
+                                <li><a href="/user_home">HOME</a></li>
+                                <li><a href="/user_book_bike">BOOK</a></li>
+                                <li><a href="/user_view_booking">MY BOOKINGS</a></li>
+                                <li><a href="/userupdprofile">PROFILE</a></li>
+                                <li><a href="/user_feedback">FEEDBACK</a></li>
+                                <li><a href="{% url 'bikeapp:logout' %}">LOGOUT</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+    <!-- End Header Section -->
+
+    {% block header %}{% endblock %}
+
+</body>
+</html>

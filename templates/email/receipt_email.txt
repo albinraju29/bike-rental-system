@@ -1,0 +1,42 @@
+Dear {{ name }},
+
+Thank you for your payment to Electro Station. Below are your complete transaction details:
+
+══════════════════════════════
+      PAYMENT RECEIPT
+══════════════════════════════
+
+🔹 Transaction ID: {{ transaction_id }}
+🔹 Payment Date: {{ payment_date|date:"F j, Y" }}
+🔹 Payment Time: {{ payment_date|time:"H:i" }}
+🔹 Amount Paid: ₹{{ amount }}
+🔹 Payment Method: {{ payment_method }}
+🔹 Last 4 Card Digits: **** **** **** {{ last_four }}
+
+══════════════════════════════
+      BOOKING DETAILS
+══════════════════════════════
+
+🔸 Bike: {{ bike_name }} ({{ bike_number }})
+🔸 Rental Period: {{ start_date }} to {{ end_date }}
+🔸 Total Rental Duration: {{ duration }}
+🔸 Pickup Station: {{ pickup_station }}
+🔸 Total Amount: ₹{{ total_amount }}
+🔸 Advance Paid: ₹{{ advance_paid }}
+🔸 Balance Paid: ₹{{ amount }}
+
+══════════════════════════════
+
+You can view and manage your booking anytime by logging into your account at:
+{{ site_url }}
+
+Need help or have questions? Contact our support team:
+📞 +91 XXX XXX XXXX
+✉️ support@electrostation.com
+
+Thank you for choosing Electro Station for your ride!
+
+Safe travels,
+The Electro Station Team
+
+[This is an automated message - please do not reply directly]

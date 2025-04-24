@@ -1,0 +1,69 @@
+{% extends 'userheader.html' %}
+{% block header %}
+
+
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <title>Send Mail</title>
+  <script src="https://smtpjs.com/v3/smtp.js">
+  </script>
+  <script>
+  Email.send({
+    Host : "smtp.gmail.com",
+    Username : "forlccekm@gmail.com",
+    Password : "EKMlcc@123",
+    To : '{{email}}',
+    From : "forlccekm@gmail.com",
+    Subject : "BOOKING DETAILS",
+    Body : '{{msg}}'
+}).then(
+  message => alert(message)
+  
+
+);
+// window.location.href=("/otp")
+</script>
+</head>
+ 
+
+
+<body>
+    <!-- <center>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="otp" placeholder="Enter OTP "  id=id1 style="width: 300px;">
+        <input type="submit" name="submit"  onclick="fun()" style="background-color: aqua; width: 300px;">
+    </form>
+    </center> -->
+</body>
+<!-- <script>
+  debugger;
+function fun()
+{
+    var a="{{rno}}"
+    var b=document.getElementById("id1").value;
+    if (a==b)
+    {
+        debugger;
+        alert("OTP VERIFICATION SUCCESSFULL");
+        document.location.href = '/login',true; -->
+        <!-- // window.location.href=("/login");
+
+
+    }
+    else{
+        alert("Enter Valid Otp");
+        document.location.href = '/login',true;
+    }
+
+} -->
+
+
+<h1>MAIL SENDED SUCCESSFULLY</h1>
+
+<!-- </script> -->
+</html>
+{% endblock %}
+</html>

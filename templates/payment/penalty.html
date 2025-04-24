@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Cancellation Penalty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfd6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .penalty-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        .penalty-header {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(241, 148, 138, 0.8));
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        .penalty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .penalty-body {
+            padding: 30px;
+        }
+
+        .penalty-card {
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .penalty-amount {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .refund-amount {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-pay {
+            background: var(--success-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-cancel {
+            background: rgba(0,0,0,0.05);
+            color: var(--text-dark);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="penalty-container">
+        <div class="glass-panel">
+            <!-- Header Section -->
+            <div class="penalty-header">
+                <i class="fas fa-exclamation-triangle penalty-icon"></i>
+                <h2>Booking Cancellation Penalty</h2>
+                <p>Late cancellation policy applied</p>
+            </div>
+
+            <!-- Penalty Details -->
+            <div class="penalty-body">
+                <div class="penalty-card">
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <i class="fas fa-bicycle"></i> Bike Number:
+                        </span>
+                        <span class="detail-value">{{ booking.bikenum.bikenum }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <i class="fas fa-money-bill-wave"></i> Total Booking Amount:
+                        </span>
+                        <span class="detail-value">₹{{ total_amount }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <i class="fas fa-hand-holding-usd"></i> Advance Paid:
+                        </span>
+                        <span class="detail-value">₹{{ advance_amount }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label penalty-amount">
+                            <i class="fas fa-exclamation-circle"></i> Penalty Applied:
+                        </span>
+                        <span class="detail-value penalty-amount">₹{{ penalty_amount }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label refund-amount">
+                            <i class="fas fa-undo"></i> Refund Amount:
+                        </span>
+                        <span class="detail-value refund-amount">₹{{ refund_amount }}</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0; color: var(--warning-color);">
+                    <i class="fas fa-info-circle"></i> You canceled your booking after 1 hour
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <form method="POST" action="{% url 'bikeapp:process_penalty' booking.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="penalty_amount" value="{{ penalty_amount }}">
+                        <button type="submit" class="btn btn-pay">
+                            <i class="fas fa-credit-card"></i> Pay ₹{{ penalty_amount }}
+                        </button>
+                    </form>
+                    <a href="{% url 'bikeapp:user_view_booking' %}" class="btn btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.querySelector('form[action*="process_penalty"]').addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to pay the penalty and cancel this booking?')) {
+            e.preventDefault();
+        }
+    });
+    </script>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</html>

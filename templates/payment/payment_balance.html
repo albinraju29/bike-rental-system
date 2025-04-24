@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Payment | Bike Return</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfd6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.8), rgba(231, 76, 60, 0.8));
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-body {
+            padding: 30px;
+        }
+
+        fieldset {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        legend {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            padding: 0 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.7);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[readonly] {
+            background-color: rgba(0,0,0,0.05);
+            border: 1px dashed rgba(0,0,0,0.1);
+            padding-left: 15px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .amount-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--warning-color);
+            padding: 10px 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: var(--warning-color);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: var(--danger-color);
+        }
+
+        .messages {
+            margin: 20px 0;
+        }
+
+        .messages li {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            list-style: none;
+        }
+
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .validation-error {
+            color: var(--danger-color);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .return-details {
+            background-color: rgba(243, 156, 18, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        @media (max-width: 768px) {
+            .payment-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .header-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="glass-panel">
+            <!-- Header Section with Icons -->
+            <div class="payment-header">
+                <div class="header-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Pending Payment</span>
+                </div>
+                <div class="header-icon">
+                    <i class="fas fa-bicycle"></i>
+                    <span>Bike Return</span>
+                </div>
+            </div>
+
+            <!-- Messages Display -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="{{ message.tags }}">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="return-details">
+                <h3><i class="fas fa-info-circle"></i> Complete Payment to Return Bike</h3>
+                <p>Please pay the remaining balance to complete your bike return process.</p>
+            </div>
+
+            <form method="POST" action="{% url 'bikeapp:payment_balance' booking_id=booking_id %}" id="paymentForm">
+                {% csrf_token %}
+                
+                <!-- Transaction Details -->
+                <fieldset>
+                    <legend><i class="fas fa-receipt"></i> Transaction Details</legend>
+                    <div class="form-group">
+                        <label>Pay To:</label>
+                        <div class="amount-display">BIKE RENTAL SYSTEM</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Bike Number:</label>
+                        <input type="text" name="bike_num" readonly value="{{ bike_num }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Remaining Amount Due:</label>
+                        <div class="amount-display">₹{{ final_amount_due }}</div>
+                        <input type="hidden" name="final_amount_due" value="{{ final_amount_due }}">
+                    </div>
+                </fieldset>
+
+                <!-- Payment Details -->
+                <fieldset>
+                    <legend><i class="fas fa-credit-card"></i> Payment Details</legend>
+                    <div class="form-group">
+                        <label>Card Number:</label>
+                        <div class="input-with-icon">
+                            <i class="far fa-credit-card"></i>
+                            <input type="text" name="cardno" id="cardno" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        <div class="validation-error" id="cardError">Please enter a valid 16-digit card number</div>
+                    </div>
+                    <div class="form-group">
+                        <label>4-digit PIN:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="pinno" id="pinno" placeholder="****" required>
+                        </div>
+                        <div class="validation-error" id="pinError">Please enter a valid 4-digit PIN</div>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-lock"></i> Pay ₹{{ final_amount_due }} & Complete Return
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentForm = document.getElementById('paymentForm');
+        const cardNoInput = document.getElementById('cardno');
+        const pinInput = document.getElementById('pinno');
+        
+        // Format card number input (16 digits with spaces)
+        cardNoInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 16) value = value.substring(0, 16);
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value.trim();
+            validateCardNumber();
+        });
+        
+        // Format PIN input (4 digits)
+        pinInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+            validatePIN();
+        });
+        
+        // Validation functions
+        function validateCardNumber() {
+            const cardNo = cardNoInput.value.replace(/\s/g, '');
+            const isValid = /^\d{16}$/.test(cardNo);
+            toggleError('cardError', !isValid);
+            return isValid;
+        }
+        
+        function validatePIN() {
+            const pin = pinInput.value;
+            const isValid = /^\d{4}$/.test(pin);
+            toggleError('pinError', !isValid);
+            return isValid;
+        }
+        
+        function toggleError(id, show) {
+            const errorElement = document.getElementById(id);
+            errorElement.style.display = show ? 'block' : 'none';
+        }
+        
+        // Form submission validation
+        paymentForm.addEventListener('submit', function(e) {
+            const isCardValid = validateCardNumber();
+            const isPINValid = validatePIN();
+            
+            if (!isCardValid || !isPINValid) {
+                e.preventDefault();
+                // Scroll to first error
+                document.querySelector('.validation-error[style="display: block;"]')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        });
+    });
+    </script>
+</body>
+</html>

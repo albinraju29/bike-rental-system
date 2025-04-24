@@ -1,0 +1,277 @@
+{% extends 'admin/adminheader.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: -1;
+    }
+
+    .admin-container {
+        max-width: 95%;
+        margin: 20px auto;
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.2); /* Slightly more opaque for better readability */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: var(--glass-border);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .page-header h2 {
+        font-size: 2.2rem; /* Increased from 2rem */
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: inline-block;
+        font-weight: 700; /* Bold */
+    }
+
+    .page-header h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 2px;
+    }
+
+    .booking-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.15); /* Slightly darker for better contrast */
+    }
+
+    .booking-table th {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 16px; /* Increased from 15px */
+        text-align: center;
+        font-weight: 700; /* Bold */
+        text-transform: uppercase;
+        font-size: 0.9rem; /* Increased from 0.8rem */
+        letter-spacing: 0.5px;
+    }
+
+    .booking-table td {
+        padding: 14px 10px; /* Increased from 12px */
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        color: white; /* Changed from rgba for better visibility */
+        font-size: 0.95rem; /* Increased from 0.85rem */
+        font-weight: 500; /* Medium weight */
+    }
+
+    .booking-table tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .booking-table tr:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px; /* Increased padding */
+        border-radius: 20px;
+        font-size: 0.85rem; /* Increased from 0.75rem */
+        font-weight: 600;
+        text-transform: uppercase;
+        min-width: 80px; /* Ensures consistent width */
+        text-align: center;
+    }
+
+    /* Brighter status colors with better contrast */
+    .status-active {
+        background-color: rgba(76, 201, 240, 0.3);
+        color: #4cc9f0;
+        border: 1px solid #4cc9f0;
+    }
+
+    .status-completed {
+        background-color: rgba(40, 167, 69, 0.3);
+        color: #28a745;
+        border: 1px solid #28a745;
+    }
+
+    .status-cancelled {
+        background-color: rgba(220, 53, 69, 0.3);
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    .status-pending {
+        background-color: rgba(248, 150, 30, 0.3);
+        color: #f8961e;
+        border: 1px solid #f8961e;
+    }
+
+    .payment-status {
+        font-size: 1.3rem; /* Increased from 1.2rem */
+    }
+
+    .paid {
+        color: #28a745;
+    }
+
+    .unpaid {
+        color: #dc3545;
+    }
+
+    .returned {
+        color: #28a745;
+    }
+
+    .not-returned {
+        color: #dc3545;
+    }
+
+    .amount {
+        font-weight: 600;
+        color: white;
+    }
+
+    /* Responsive Table */
+    @media (max-width: 1200px) {
+        .booking-table th,
+        .booking-table td {
+            padding: 12px 8px; /* Increased from 10px */
+            font-size: 0.85rem; /* Increased from 0.8rem */
+        }
+    }
+
+    @media (max-width: 992px) {
+        .admin-container {
+            overflow-x: auto;
+        }
+        
+        .booking-table {
+            min-width: 900px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h2 {
+            font-size: 2rem; /* Increased from 1.8rem */
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            padding: 15px; /* Increased from 10px */
+        }
+        
+        .admin-container {
+            padding: 20px; /* Increased from 15px */
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="page-header">
+        <h2><i class="fas fa-calendar-check"></i> Booking Management</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table class="booking-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Contact</th>
+                    <th>Bike</th>
+                    <th>Start Station</th>
+                    <th>End Station</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Advance</th>
+                    <th>Due</th>
+                    <th>Paid</th>
+                    <th>Returned</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td><strong>{{ booking.id }}</strong></td>
+                    <td><strong>{{ booking.user.userregister.name }}</strong></td>
+                    <td><strong>{{ booking.user.userregister.phone }}</strong></td>
+                    <td><strong>{{ booking.bikenum.bikenum }}</strong></td>
+                    <td><strong>{{ booking.strtstation.stationname }}</strong></td>
+                    <td><strong>{{ booking.endstation.stationname }}</strong></td>
+                    <td><strong>{{ booking.start_datetime|date:"M d, H:i" }}</strong></td>
+                    <td><strong>{{ booking.end_datetime|date:"M d, H:i" }}</strong></td>
+                    <td class="amount"><strong>₹{{ booking.advance_paid }}</strong></td>
+                    <td class="amount"><strong>₹{{ booking.final_amount_due }}</strong></td>
+                    <td class="payment-status {% if booking.final_amount_due == 0 %}paid{% else %}unpaid{% endif %}">
+                        {% if booking.final_amount_due == 0 %}<i class="fas fa-check-circle"></i>{% else %}<i class="fas fa-times-circle"></i>{% endif %}
+                    </td>
+                    <td class="payment-status {% if booking.rtrn %}returned{% else %}not-returned{% endif %}">
+                        {% if booking.rtrn %}<i class="fas fa-check-circle"></i>{% else %}<i class="fas fa-times-circle"></i>{% endif %}
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ booking.status|lower }}">
+                            <strong>{{ booking.status }}</strong>
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="13" style="text-align: center; padding: 40px; color: white;">
+                        <i class="fas fa-calendar-times" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+                        <p style="font-size: 1.2rem; font-weight: 500;">No bookings found</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}

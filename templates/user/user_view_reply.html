@@ -1,0 +1,22 @@
+{% extends 'user/userheader.html' %}
+{% block header %}
+<form action="#" method="post" class="banner_form">
+    {% csrf_token %}
+    <table class="table" border="2" cellpadding="5" width="700px">
+        <tr>
+            <td style="color: rgb(233, 10, 10);">FEEDBACK</td>
+            <td style="color: rgb(233, 10, 10);">DATE</td>
+            <td style="color: rgb(233, 10, 10);">REPLY</td>
+        </tr>
+        {% for d in data %}
+        <tr>
+            <td style="color: white;">{{d.0}}</td>
+            <td style="color: white;">{{d.1}}</td>
+            <td style="color: white;">{{d.2}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,217 @@
+/* jQuery FlexSlider v2.0 - Updated */
+/* Browser Resets */
+.flex-container a:active,
+.flexslider a:active,
+.flex-container a:focus,
+.flexslider a:focus {
+    outline: none;
+}
+.slides,
+.flex-control-nav,
+.flex-direction-nav {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* FlexSlider Necessary Styles */
+.flexslider {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.flexslider .slides > li {
+    display: none;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.flexslider .slides img {
+    width: 100%;
+    display: block;
+    border-radius: none;
+    min-height: 600px;
+}
+.flex-pauseplay span {
+    text-transform: capitalize;
+}
+
+/* Clearfix */
+.slides:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+/* No JavaScript Fallback */
+.no-js .slides > li:first-child {
+    display: block;
+}
+
+/* Default Theme */
+.flex-viewport {
+    max-height: 1500px;
+    transition: all 1s ease;
+}
+.loading .flex-viewport {
+    max-height: 300px;
+}
+.flexslider .slides {
+    zoom: 1;
+}
+.carousel li {
+    margin-right: 5px;
+}
+
+/* Direction Navigation - Modern Arrows */
+.flex-direction-nav a {
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0;
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 24px;
+    text-align: center;
+    line-height: 40px;
+    text-decoration: none;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.flex-direction-nav a:hover {
+    opacity: 1;
+    background: #dc0000;
+}
+
+.flex-direction-nav .flex-prev {
+    left: 10px;
+    content: "←";
+}
+.flex-direction-nav .flex-next {
+    right: 10px;
+    content: "→";
+}
+
+/* Control Navigation */
+.flex-control-nav {
+    width: 100%;
+    position: absolute;
+    bottom: 72px;
+    text-align: center;
+}
+.flex-control-nav li {
+    margin: 0 6px;
+    display: inline-block;
+}
+.flex-control-paging li a {
+    width: 30px;
+    height: 15px;
+    display: inline-block;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    transition: background 0.3s;
+}
+.flex-control-paging li a:hover {
+    background: #dc0000;
+}
+.flex-control-paging li a.flex-active {
+    background: #dc0000;
+    cursor: default;
+}
+
+/* Thumbnails */
+.flex-control-thumbs {
+    margin: 5px 0 0;
+    overflow: hidden;
+}
+.flex-control-thumbs li {
+    width: 25%;
+    float: left;
+    margin: 0;
+}
+.flex-control-thumbs img {
+    width: 100%;
+    display: block;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+.flex-control-thumbs img:hover {
+    opacity: 1;
+}
+.flex-control-thumbs .active {
+    opacity: 1;
+    cursor: default;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+    .flexslider .slides img {
+        min-height: 410px;
+    }
+}
+
+@media screen and (max-width: 860px) {
+    .flex-direction-nav .flex-prev {
+        opacity: 1;
+        left: 0;
+    }
+    .flex-direction-nav .flex-next {
+        opacity: 1;
+        right: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .flexslider .slides img {
+        min-height: 340px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .flexslider .slides img {
+        min-height: 305px;
+    }
+    .flex-control-nav {
+        bottom: 46px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .flexslider .slides img {
+        min-height: 220px;
+    }
+    .flex-control-paging li a {
+        width: 30px;
+    }
+    .flex-control-nav {
+        bottom: 27px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .flex-control-nav li {
+        margin: 0 1px;
+    }
+    .flexslider .slides img {
+        min-height: 160px;
+    }
+    .flex-control-paging li a {
+        width: 25px;
+        height: 5px;
+    }
+    .flex-control-nav {
+        bottom: 0;
+    }
+}

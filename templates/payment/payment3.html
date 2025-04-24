@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfd6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .glass-panel {
+            background: var(--glass-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            max-width: 900px;
+            width: 90%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(46, 204, 113, 0.8));
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .payment-header h1 {
+            margin: 10px 0 5px;
+            font-size: 2rem;
+        }
+
+        .payment-header p {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .processing-container {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .loading-animation {
+            height: 100px;
+            margin: 20px auto;
+        }
+
+        .processing-text {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 80%;
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            animation: progress 3s forwards;
+        }
+
+        @keyframes progress {
+            to { width: 100%; }
+        }
+
+        .security-footer {
+            background: rgba(0,0,0,0.05);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .security-badge {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .security-badge:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .payment-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .processing-text {
+                font-size: 1.2rem;
+            }
+            
+            .security-footer {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body onload="redirectToPayment()">
+    <div class="glass-panel">
+        <!-- Header Section -->
+        <div class="payment-header">
+            <h1>Payment Processing</h1>
+            <p>Your transaction is being secured</p>
+        </div>
+
+        <!-- Processing Section -->
+        <div class="processing-container">
+            <img src="{% static 'payment/Images/loading.gif' %}" alt="Loading..." class="loading-animation">
+            <div class="processing-text">
+                <i class="fas fa-cog fa-spin"></i> Processing your payment...
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>Please wait while we verify your payment details</p>
+        </div>
+
+        <!-- Security Footer -->
+        <div class="security-footer">
+            <img src="{% static 'payment/Images/secure.jpg' %}" alt="Secure" class="security-badge">
+            <img src="{% static 'payment/Images/firstdataglobal_cardinal_centinel_3d-secure_verified_by_visa.gif' %}" 
+                 alt="Verified by Visa" class="security-badge">
+            <img src="{% static 'payment/Images/seq.JPG' %}" alt="Security" class="security-badge">
+            <img src="{% static 'payment/Images/ImgSml_PaymentGateway.jpg' %}" alt="Payment Gateway" class="security-badge">
+        </div>
+    </div>
+
+    <script>
+        function redirectToPayment() {
+            setTimeout(function() { 
+                window.location.href = "{% url 'bikeapp:payment4' %}"; 
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

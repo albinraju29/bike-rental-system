@@ -1,0 +1,280 @@
+{% extends 'admin/adminheader.html' %}
+{% load static %}
+{% block header %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --dark: #212529;
+        --light: #f8f9fa;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: -1;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    h1 {
+        color: white;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 3px;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+    }
+
+    .users-table th, 
+    .users-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .users-table th {
+        background-color: rgba(37, 43, 41, 0.8);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .users-table tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .users-table tr:nth-child(odd) {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .users-table tr:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .users-table td {
+        color: rgba(255, 255, 255, 0.9);
+        vertical-align: middle;
+    }
+
+    .profile-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .profile-img:hover {
+        transform: scale(1.1);
+        border-color: var(--success);
+    }
+
+    .no-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+    }
+
+    .action-btn {
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin: 0 5px;
+        display: inline-block;
+    }
+
+    .approve-btn {
+        background-color: var(--success);
+        color: white;
+    }
+
+    .approve-btn:hover {
+        background-color: #3aa8d4;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .reject-btn {
+        background-color: var(--danger);
+        color: white;
+    }
+
+    .reject-btn:hover {
+        background-color: #e01a6f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .divider {
+        color: rgba(255, 255, 255, 0.3);
+        margin: 0 10px;
+    }
+
+    .empty-message {
+        text-align: center;
+        padding: 30px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px;
+        }
+        
+        .users-table {
+            display: block;
+            overflow-x: auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+        }
+        
+        .users-table th, 
+        .users-table td {
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .users-table th, 
+        .users-table td {
+            padding: 8px;
+            font-size: 12px;
+        }
+        
+        .profile-img,
+        .no-image {
+            width: 40px;
+            height: 40px;
+        }
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-user-clock"></i> Applied Users</h1>
+    
+    {% if applied_users %}
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-image"></i> Profile</th>
+                    <th><i class="fas fa-id-card"></i> User ID</th>
+                    <th><i class="fas fa-user"></i> Name</th>
+                    <th><i class="fas fa-phone"></i> Phone</th>
+                    <th><i class="fas fa-map-marker-alt"></i> Address</th>
+                    <th><i class="fas fa-cog"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in applied_users %}
+                <tr>
+                    <td>
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" class="profile-img" alt="Profile Picture">
+                        {% else %}
+                            <div class="no-image">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.address|truncatechars:20 }}</td>
+                    <td>
+                        <a href="{% url 'bikeapp:admin_add_user' user.id %}" class="action-btn approve-btn">
+                            <i class="fas fa-check"></i> Approve
+                        </a>
+                        <span class="divider">|</span>
+                        <a href="{% url 'bikeapp:admin_reject_user' user.id %}" class="action-btn reject-btn">
+                            <i class="fas fa-times"></i> Reject
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="empty-message">No users awaiting approval</p>
+    {% endif %}
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}

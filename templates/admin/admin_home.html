@@ -1,0 +1,612 @@
+{% extends 'admin/adminheader.html' %}
+{% load static %}
+
+{% block header %}
+<style>
+    :root {
+        --glass-light: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --warning-color: #f39c12;
+    }
+
+    body {
+        background: linear-gradient(135deg, rgba(245, 247, 250, 0.9), rgba(195, 207, 226, 0.9));
+        background-blend-mode: soft-light;
+    }
+
+    /* Glass Panel Base Style */
+    .glass-panel {
+        background: var(--glass-light);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* Dashboard Components */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .dashboard-title {
+        color: #2c3e50;
+        font-size: 2.8rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: var(--glass-light);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-icon {
+        font-size: 2.8rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 10px 0;
+    }
+
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    /* New Motorcycle Gallery Section */
+    .motorcycle-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .motorcycle-card {
+        background: var(--glass-light);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .motorcycle-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .motorcycle-image {
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .motorcycle-status {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .status-available {
+        background-color: var(--secondary-color);
+    }
+
+    .status-booked {
+        background-color: var(--danger-color);
+    }
+
+    .status-maintenance {
+        background-color: var(--warning-color);
+    }
+
+    .motorcycle-info {
+        padding: 15px;
+    }
+
+    .motorcycle-model {
+        font-weight: 700;
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+    }
+
+    .motorcycle-specs {
+        display: flex;
+        justify-content: space-between;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .motorcycle-price {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    /* Booking Calendar Section */
+    .booking-calendar {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .booking-calendar th {
+        background: rgba(52, 152, 219, 0.1);
+        color: #2c3e50;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .booking-calendar td {
+        height: 40px;
+        text-align: center;
+        border: 1px solid rgba(0,0,0,0.05);
+        position: relative;
+    }
+
+    .calendar-day {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        font-weight: bold;
+    }
+
+    .booking-indicator {
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background-color: var(--secondary-color);
+        border-radius: 2px;
+    }
+
+    .booking-high {
+        background-color: var(--danger-color);
+    }
+
+    .booking-medium {
+        background-color: var(--warning-color);
+    }
+
+    /* Revenue Chart Section */
+    .chart-container {
+        height: 300px;
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .chart-legend {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 20px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+
+    .legend-color {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+        margin-right: 8px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1200px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .quick-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .quick-stats {
+            grid-template-columns: 1fr;
+        }
+        
+        .motorcycle-gallery {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<div class="glass-panel" style="margin: 40px auto; max-width: 1400px;">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Motorcycle Rental Dashboard</h1>
+        <div class="date-display">
+            <span id="current-date" style="font-weight: 500; color: #7f8c8d;"></span>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-motorcycle"></i>
+            </div>
+            <div class="stat-value" id="total-bikes">86</div>
+            <div class="stat-label">Total Motorcycles</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="stat-value" id="total-stations">12</div>
+            <div class="stat-label">Rental Stations</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-value" id="active-users">328</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-value" id="today-bookings">42</div>
+            <div class="stat-label">Today's Bookings</div>
+        </div>
+    </div>
+
+    <!-- Featured Motorcycles Section -->
+    <div class="glass-panel">
+        <h2 style="color: #2c3e50; margin-bottom: 25px; font-size: 1.8rem;">
+            <i class="fas fa-star mr-2"></i> Featured Motorcycles
+        </h2>
+        
+        <div class="motorcycle-gallery">
+            <!-- Motorcycle 1 -->
+            <div class="motorcycle-card">
+                <div class="motorcycle-image" style="background-image: url('{% static "images/g1.jpg" %}');">
+                    <span class="motorcycle-status status-available">Available</span>
+                </div>
+                <div class="motorcycle-info">
+                    <h3 class="motorcycle-model">Harley-Davidson Street Glide</h3>
+                    <div class="motorcycle-specs">
+                        <span>1800cc</span>
+                        <span>Touring</span>
+                    </div>
+                    <div class="motorcycle-price">$129/day</div>
+                </div>
+            </div>
+            
+            <!-- Motorcycle 2 -->
+            <div class="motorcycle-card">
+                <div class="motorcycle-image" style="background-image: url('{% static "images/g2.jpg" %}');">
+                    <span class="motorcycle-status status-booked">Booked</span>
+                </div>
+                <div class="motorcycle-info">
+                    <h3 class="motorcycle-model">Ducati Panigale V4</h3>
+                    <div class="motorcycle-specs">
+                        <span>1103cc</span>
+                        <span>Sport</span>
+                    </div>
+                    <div class="motorcycle-price">$199/day</div>
+                </div>
+            </div>
+            
+            <!-- Motorcycle 3 -->
+            <div class="motorcycle-card">
+                <div class="motorcycle-image" style="background-image: url('{% static "images/g3.jpg" %}');">
+                    <span class="motorcycle-status status-maintenance">Maintenance</span>
+                </div>
+                <div class="motorcycle-info">
+                    <h3 class="motorcycle-model">BMW R 1250 GS</h3>
+                    <div class="motorcycle-specs">
+                        <span>1254cc</span>
+                        <span>Adventure</span>
+                    </div>
+                    <div class="motorcycle-price">$149/day</div>
+                </div>
+            </div>
+            
+            <!-- Motorcycle 4 -->
+            <div class="motorcycle-card">
+                <div class="motorcycle-image" style="background-image: url('{% static "images/g4.jpg" %}');">
+                    <span class="motorcycle-status status-available">Available</span>
+                </div>
+                <div class="motorcycle-info">
+                    <h3 class="motorcycle-model">Honda Rebel 500</h3>
+                    <div class="motorcycle-specs">
+                        <span>471cc</span>
+                        <span>Cruiser</span>
+                    </div>
+                    <div class="motorcycle-price">$79/day</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="dashboard-grid">
+        <!-- Booking Calendar -->
+        <div class="glass-panel">
+			<h2 style="color: #2c3e50; margin-bottom: 25px; font-size: 1.8rem;">
+				<i class="fas fa-calendar-alt mr-2"></i> Booking Calendar
+			</h2>
+			
+            
+            <table class="booking-calendar">
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="calendar-day">28</span><div class="booking-indicator booking-medium"></div></td>
+                        <td><span class="calendar-day">29</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">30</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">31</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">1</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">2</span><div class="booking-indicator booking-medium"></div></td>
+                        <td><span class="calendar-day">3</span><div class="booking-indicator booking-high"></div></td>
+                    </tr>
+                    <tr>
+                        <td><span class="calendar-day">4</span><div class="booking-indicator booking-high"></div></td>
+                        <td><span class="calendar-day">5</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">6</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">7</span><div class="booking-indicator booking-medium"></div></td>
+                        <td><span class="calendar-day">8</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">9</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">10</span><div class="booking-indicator booking-high"></div></td>
+                    </tr>
+                    <tr>
+                        <td><span class="calendar-day">11</span><div class="booking-indicator booking-high"></div></td>
+                        <td><span class="calendar-day">12</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">13</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">14</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">15</span><div class="booking-indicator booking-medium"></div></td>
+                        <td><span class="calendar-day">16</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">17</span><div class="booking-indicator"></div></td>
+                    </tr>
+                    <tr>
+                        <td><span class="calendar-day">18</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">19</span><div class="booking-indicator booking-medium"></div></td>
+                        <td><span class="calendar-day">20</span><div class="booking-indicator booking-high"></div></td>
+                        <td><span class="calendar-day">21</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">22</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">23</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">24</span><div class="booking-indicator booking-medium"></div></td>
+                    </tr>
+                    <tr>
+                        <td><span class="calendar-day">25</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">26</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">27</span><div class="booking-indicator booking-high"></div></td>
+                        <td><span class="calendar-day">28</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">29</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">30</span><div class="booking-indicator"></div></td>
+                        <td><span class="calendar-day">1</span><div class="booking-indicator"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus mr-2"></i> New Booking
+                </button>
+                <button class="btn btn-outline-secondary">
+                    <i class="fas fa-print mr-2"></i> Print Schedule
+                </button>
+            </div>
+        </div>
+
+        <!-- Revenue Chart -->
+        <div class="glass-panel">
+            <h2 style="color: #2c3e50; margin-bottom: 25px; font-size: 1.8rem;">
+                <i class="fas fa-chart-line mr-2"></i> Revenue Overview
+            </h2>
+            
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+            
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <span>Daily Rentals</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2ecc71;"></div>
+                    <span>Weekly Rentals</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #9b59b6;"></div>
+                    <span>Accessories</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="glass-panel" style="margin-top: 30px;">
+        <h2 style="color: #2c3e50; margin-bottom: 25px; font-size: 1.8rem;">
+            <i class="fas fa-heartbeat mr-2"></i> System Health
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div>
+                <h4 style="color: #2c3e50;">Motorcycle Availability</h4>
+                <div style="height: 10px; background: #ecf0f1; border-radius: 5px; margin: 10px 0;">
+                    <div style="width: 78%; height: 100%; background: #2ecc71; border-radius: 5px;"></div>
+                </div>
+                <small style="color: #7f8c8d;">78% of bikes available</small>
+            </div>
+            
+            <div>
+                <h4 style="color: #2c3e50;">Station Capacity</h4>
+                <div style="height: 10px; background: #ecf0f1; border-radius: 5px; margin: 10px 0;">
+                    <div style="width: 65%; height: 100%; background: #3498db; border-radius: 5px;"></div>
+                </div>
+                <small style="color: #7f8c8d;">65% average station capacity</small>
+            </div>
+            
+            <div>
+                <h4 style="color: #2c3e50;">System Uptime</h4>
+                <div style="height: 10px; background: #ecf0f1; border-radius: 5px; margin: 10px 0;">
+                    <div style="width: 99.9%; height: 100%; background: #9b59b6; border-radius: 5px;"></div>
+                </div>
+                <small style="color: #7f8c8d;">99.9% uptime this month</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set current date
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', options);
+    
+    // Load real data from API
+    fetch('/api/admin/dashboard')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-bikes').textContent = data.totalBikes;
+            document.getElementById('total-stations').textContent = data.totalStations;
+            document.getElementById('active-users').textContent = data.activeUsers;
+            document.getElementById('today-bookings').textContent = data.todayBookings;
+        })
+        .catch(error => {
+            console.error('Error loading dashboard data:', error);
+        });
+        
+    // Initialize Revenue Chart
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [
+                {
+                    label: 'Daily Rentals',
+                    data: [12500, 19000, 15300, 17800, 19200, 22500, 24800],
+                    backgroundColor: '#3498db',
+                    borderRadius: 5
+                },
+                {
+                    label: 'Weekly Rentals',
+                    data: [8000, 12000, 10500, 11000, 12500, 15000, 16500],
+                    backgroundColor: '#2ecc71',
+                    borderRadius: 5
+                },
+                {
+                    label: 'Accessories',
+                    data: [3500, 4200, 3800, 4500, 5200, 5800, 6200],
+                    backgroundColor: '#9b59b6',
+                    borderRadius: 5
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': $' + context.raw.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Simulate real-time updates
+    setInterval(() => {
+        const bookingElement = document.getElementById('today-bookings');
+        const currentValue = parseInt(bookingElement.textContent);
+        bookingElement.textContent = currentValue + Math.floor(Math.random() * 3);
+    }, 30000);
+});
+</script>
+{% endblock %}

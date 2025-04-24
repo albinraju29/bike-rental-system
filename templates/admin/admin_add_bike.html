@@ -1,0 +1,550 @@
+{% extends 'admin/adminheader.html' %}
+{% load static %}
+{% block header %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --danger: #f72585;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/bg4.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: -1;
+    }
+
+    .form-container {
+        width: 50%;
+        margin: 50px auto;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    h1 {
+        color: white;
+        text-align: center;
+        font-size: 26px;
+        margin-bottom: 30px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 3px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    label i {
+        margin-right: 8px;
+        width: 20px;
+        text-align: center;
+        color: var(--success);
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    input[type="text"],
+    input[type="file"],
+   
+    select {
+        width: 100%;
+        padding: 14px 15px 14px 45px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        transition: all 0.3s ease;
+        appearance: none;
+        background: rgba(255, 255, 255, 0.15) url("data:image/svg+xml;utf8,<svg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'><path fill='white' d='M70 120L10 20h120z'/></svg>") no-repeat right 15px center;
+        background-size: 12px;
+        cursor: pointer;
+        padding-right: 35px; /* Extra space for arrow */
+    }
+
+    input[type="file"] {
+        padding: 12px 15px;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+    }
+
+    input:focus,
+    select:focus {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: var(--success);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        outline: none;
+    }
+
+    select option {
+        background: #444; /* Solid dark background */
+        color: white;
+        padding: 10px 15px;
+        margin: 2px 0;
+    }
+
+    /* Hover state for options */
+    select option:hover {
+        background: #555 !important;
+    }
+
+    /* Selected option highlight */
+    select option:checked {
+        background: var(--success) !important;
+    }
+
+    
+    select {
+        appearance: none;
+        background: rgba(255, 255, 255, 0.15) url("data:image/svg+xml;utf8,<svg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'><path fill='white' d='M70 120L10 20h120z'/></svg>") no-repeat right 15px center;
+        background-size: 12px;
+        cursor: pointer;
+    }
+
+    /* Image Upload Styling */
+    .file-upload {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .file-upload-btn {
+        width: 100%;
+        padding: 14px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .file-upload-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--success);
+    }
+
+    .file-upload-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    /* Image Preview */
+    .preview-container {
+        text-align: center;
+        margin: 25px 0;
+        position: relative;
+    }
+
+    #image-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: none;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        border: 3px solid var(--success);
+        transition: all 0.3s ease;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 10px;
+        right: calc(50% - 85px);
+        background: var(--danger);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s;
+        border: none;
+        font-size: 14px;
+    }
+
+    #image-preview:hover + .remove-image,
+    .remove-image:hover {
+        opacity: 1;
+    }
+
+    /* Submit Button */
+    .submit {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 16px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit:hover {
+        background: linear-gradient(135deg, var(--secondary), #2a2d7a);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .submit:active {
+        transform: translateY(-1px);
+    }
+
+    .submit::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.4s ease;
+    }
+
+    .submit:hover::after {
+        transform: translateX(100%);
+    }
+
+    /* Validation Styles */
+    .error-message {
+        color: var(--danger);
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .input-error {
+        border-color: var(--danger) !important;
+    }
+
+    .input-success {
+        border-color: var(--success) !important;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+        .form-container {
+            width: 85%;
+            padding: 25px;
+        }
+    }
+
+    @media screen and (max-width: 576px) {
+        .form-container {
+            width: 95%;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 22px;
+        }
+        
+        input[type="text"],
+        select,
+        .file-upload-btn {
+            padding: 12px 15px 12px 40px;
+        }
+        
+        #image-preview {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <form method="post" enctype="multipart/form-data" id="bikeForm">
+        {% csrf_token %}
+
+        <h1><i class="fas fa-motorcycle"></i> {{ msg }}</h1>
+
+        <!-- Bike Image Upload -->
+        <div class="form-group">
+            <label for="bimg"><i class="fas fa-camera"></i> Bike Image</label>
+            <div class="file-upload">
+                <div class="file-upload-btn" id="fileUploadBtn">
+                    <i class="fas fa-cloud-upload-alt"></i> Choose an image
+                </div>
+                <input type="file" name="bimg" id="bimg" required accept="image/*" class="file-upload-input" onchange="previewImage(event)">
+            </div>
+            <div class="error-message" id="imageError">Please select a valid image file (JPEG, PNG)</div>
+        </div>
+
+        <!-- Image Preview -->
+        <div class="preview-container">
+            <img id="image-preview">
+            <button type="button" class="remove-image" onclick="removeImage()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Bike Number -->
+        <div class="form-group">
+            <label for="bikenum"><i class="fas fa-hashtag"></i> Bike Number</label>
+            <div class="input-wrapper">
+                <i class="fas fa-barcode input-icon"></i>
+                <input type="text" name="bikenum" id="bikenum" required placeholder="e.g. BK-001" pattern="[A-Za-z0-9-]+" maxlength="10">
+            </div>
+            <div class="error-message" id="bikeNumError">Please enter a valid bike number (letters, numbers, and hyphens only)</div>
+        </div>
+
+        <!-- Bike Model -->
+        <div class="form-group">
+            <label for="bikemodel"><i class="fas fa-tag"></i> Bike Model</label>
+            <div class="input-wrapper">
+                <i class="fas fa-motorcycle input-icon"></i>
+                <input type="text" name="bikemodel" id="bikemodel" required placeholder="e.g. Hero Sprint" maxlength="50">
+            </div>
+            <div class="error-message" id="bikeModelError">Please enter a valid bike model</div>
+        </div>
+
+        <!-- Station Selection -->
+        <div class="form-group">
+            <label for="station"><i class="fas fa-map-marker-alt"></i> Station</label>
+            <div class="input-wrapper">
+                <i class="fas fa-store input-icon"></i>
+                <select name="station" id="station" required>
+                    <option value="" disabled selected>Select a station</option>
+                    {% for station in stations %}
+                    <option value="{{ station.id }}">
+                        {{ station.stationname }} ({{ station.bike_set.count }}/{{ station.no_of_bikes }} bikes)
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="error-message" id="stationError">Please select a station</div>
+        </div>
+
+        <button type="submit" class="submit">
+            <i class="fas fa-plus-circle"></i> ADD BIKE
+        </button>
+    </form>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+    // Image Preview Functionality
+    function previewImage(event) {
+        const file = eventa.target.files[0];
+        const preview = document.getElementById('image-preview');
+        const fileUploadBtn = document.getElementById('fileUploadBtn');
+        const imageError = document.getElementById('imageError');
+        
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!validTypes.includes(file.type)) {
+            imageError.style.display = 'block';
+            event.target.value = '';
+            return;
+        }
+        
+        imageError.style.display = 'none';
+        
+        const reader = new FileReader();
+        reader.onload = function() {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+            fileUploadBtn.innerHTML = `<i class="fas fa-check-circle"></i> ${file.name}`;
+            document.querySelector('.remove-image').style.opacity = '1';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Remove Image Functionality
+    function removeImage() {
+        const preview = document.getElementById('image-preview');
+        const fileInput = document.getElementById('bimg');
+        const fileUploadBtn = document.getElementById('fileUploadBtn');
+        
+        preview.src = '';
+        preview.style.display = 'none';
+        fileInput.value = '';
+        fileUploadBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Choose an image';
+        document.querySelector('.remove-image').style.opacity = '0';
+    }
+
+    // Form Validation
+    document.getElementById('bikeForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate Image
+        const imageInput = document.getElementById('bimg');
+        if (!imageInput.value) {
+            document.getElementById('imageError').textContent = 'Please select an image';
+            document.getElementById('imageError').style.display = 'block';
+            isValid = false;
+        }
+        
+        // Validate Bike Number
+        const bikeNum = document.getElementById('bikenum');
+        if (!bikeNum.value || !bikeNum.checkValidity()) {
+            document.getElementById('bikeNumError').style.display = 'block';
+            bikeNum.classList.add('input-error');
+            isValid = false;
+        } else {
+            bikeNum.classList.remove('input-error');
+            bikeNum.classList.add('input-success');
+        }
+        
+        // Validate Bike Model
+        const bikeModel = document.getElementById('bikemodel');
+        if (!bikeModel.value) {
+            document.getElementById('bikeModelError').style.display = 'block';
+            bikeModel.classList.add('input-error');
+            isValid = false;
+        } else {
+            bikeModel.classList.remove('input-error');
+            bikeModel.classList.add('input-success');
+        }
+        
+        // Validate Station
+        const station = document.getElementById('station');
+        if (!station.value) {
+            document.getElementById('stationError').style.display = 'block';
+            station.classList.add('input-error');
+            isValid = false;
+        } else {
+            station.classList.remove('input-error');
+            station.classList.add('input-success');
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Scroll to first error
+            document.querySelector('.error-message[style*="display: block"]').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    });
+
+    // Real-time validation
+    document.getElementById('bikenum').addEventListener('input', function() {
+        if (this.checkValidity()) {
+            document.getElementById('bikeNumError').style.display = 'none';
+            this.classList.remove('input-error');
+            this.classList.add('input-success');
+        }
+    });
+    
+    document.getElementById('bikemodel').addEventListener('input', function() {
+        if (this.value) {
+            document.getElementById('bikeModelError').style.display = 'none';
+            this.classList.remove('input-error');
+            this.classList.add('input-success');
+        }
+    });
+    
+    document.getElementById('station').addEventListener('change', function() {
+        if (this.value) {
+            document.getElementById('stationError').style.display = 'none';
+            this.classList.remove('input-error');
+            this.classList.remove('input-error');
+            this.classList.add('input-success');
+        }
+    });
+
+    // Drag and drop for image upload
+    const fileUploadBtn = document.getElementById('fileUploadBtn');
+    const fileInput = document.getElementById('bimg');
+
+    fileUploadBtn.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadBtn.style.background = 'rgba(255, 255, 255, 0.25)';
+        fileUploadBtn.style.borderColor = 'var(--success)';
+    });
+
+    fileUploadBtn.addEventListener('dragleave', () => {
+        fileUploadBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+        fileUploadBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+    });
+
+    fileUploadBtn.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+        fileUploadBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            const event = new Event('change');
+            fileInput.dispatchEvent(event);
+        }
+    });
+</script>
+{% endblock %}
